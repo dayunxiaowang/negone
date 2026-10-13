@@ -1,6 +1,6 @@
-// NoirVisor Windows Driver Version Resource
+// NegOne Windows Driver Version Resource
 // Copyright 2018-2026, Zero Tang. All rights reserved.
-// https://github.com/Zero-Tang/NoirVisor
+// https://github.com/dayunxiaowang/negone
 
 /* ----- Symbols ----- */
 #define VS_FILE_INFO            RT_VERSION

@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
@@ -12,6 +12,6 @@
 
 pub mod x86;
 
-pub const NOIR_HYPERCALL_CODE_CALLEXIT: u32 = 0x1;
-pub const NOIR_HYPERCALL_CODE_REGISTER_PAGES: u32 = 0x2;
-pub const NOIR_HYPERCALL_CODE_EXIT_BOOT_SERVICES: u32 = 0x3;
+pub const NEGONE_HYPERCALL_CODE_CALLEXIT: u32 = 0x1;
+pub const NEGONE_HYPERCALL_CODE_REGISTER_PAGES: u32 = 0x2;
+pub const NEGONE_HYPERCALL_CODE_EXIT_BOOT_SERVICES: u32 = 0x3;

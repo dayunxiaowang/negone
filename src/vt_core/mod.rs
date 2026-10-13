@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the Intel VT-x driver of NoirVisor Core in Rust.
+ * This file is the Intel VT-x driver of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -296,11 +296,11 @@ impl VtVcpu
 		self.msr_auto_host[4] = VmxMsrAutoItem::new(MSR_KERNEL_GS_BASE, state.gsswap);
 		unsafe {
 			vmwrite32(VMENTRY_MSR_LOAD_COUNT, self.msr_auto_guest.len() as u32);
-			vmwrite64(VMENTRY_MSR_LOAD_ADDRESS, noir_get_physical_address(self.msr_auto_guest.as_mut_ptr().cast()));
+			vmwrite64(VMENTRY_MSR_LOAD_ADDRESS, negone_get_physical_address(self.msr_auto_guest.as_mut_ptr().cast()));
 			vmwrite32(VMEXIT_MSR_STORE_COUNT, self.msr_auto_guest.len() as u32);
-			vmwrite64(VMEXIT_MSR_STORE_ADDRESS, noir_get_physical_address(self.msr_auto_guest.as_mut_ptr().cast()));
+			vmwrite64(VMEXIT_MSR_STORE_ADDRESS, negone_get_physical_address(self.msr_auto_guest.as_mut_ptr().cast()));
 			vmwrite32(VMEXIT_MSR_LOAD_COUNT, self.msr_auto_host.len() as u32);
-			vmwrite64(VMEXIT_MSR_LOAD_ADDRESS, noir_get_physical_address(self.msr_auto_host.as_mut_ptr().cast()));
+			vmwrite64(VMEXIT_MSR_LOAD_ADDRESS, negone_get_physical_address(self.msr_auto_host.as_mut_ptr().cast()));
 		}
 	}
 
@@ -668,7 +668,7 @@ impl Default for VtHypervisor
 	{
 		let xsave_cpuid = ExtendedStateEnumeration0::cpuid();
 		Self {
-			vcpus: Vec::with_capacity(unsafe { noir_get_processor_count() as usize }),
+			vcpus: Vec::with_capacity(unsafe { negone_get_processor_count() as usize }),
 			msr_bitmap: MemoryDescriptor::null(),
 			io_bitmap_a: MemoryDescriptor::null(),
 			io_bitmap_b: MemoryDescriptor::null(),
@@ -701,7 +701,7 @@ impl HypervisorCapabilities for VtHypervisor
 			let pri_proc_sup = VmxPriProcCtrlMsr::read(use_true_msr);
 			let exit_sup = VmxExitCtrlMsr::read(use_true_msr);
 			let entry_sup = VmxEntryCtrlMsr::read(use_true_msr);
-			// Most of the following requirements are necessary for NoirVisor CVM feature.
+			// Most of the following requirements are necessary for NegOne CVM feature.
 			// External-Interrupt Exiting and Interrupt-Acknowledging on Exit are required
 			// for filtering IOMMU-fault interrupts.
 			basic_requirement &= pin_sup.get_allowed1().external_interrupt_exiting();
@@ -713,7 +713,7 @@ impl HypervisorCapabilities for VtHypervisor
 			basic_requirement &= pri_proc_sup.get_allowed1().nmi_window_exiting();
 			basic_requirement &= pri_proc_sup.get_allowed1().unconditional_io_exiting();
 			// Note that Microsoft Hyper-V does not expose MTF its guest.
-			// It also implies if you're testing NoirVisor with KVM in WSL2, this requirement can't be satisfied.
+			// It also implies if you're testing NegOne with KVM in WSL2, this requirement can't be satisfied.
 			// basic_requirement&=pri_proc_sup.get_allowed1().monitor_trap_flag();
 			basic_requirement &= pri_proc_sup.get_allowed1().use_msr_bitmap();
 			basic_requirement &= exit_sup.get_allowed1().acknowledge_interrupt_on_exit();
@@ -723,7 +723,7 @@ impl HypervisorCapabilities for VtHypervisor
 			basic_requirement &= exit_sup.get_allowed1().save_pat();
 			basic_requirement &= entry_sup.get_allowed1().load_efer();
 			basic_requirement &= entry_sup.get_allowed1().load_pat();
-			// While NoirVisor doesn't really support being a 32-bit hypervisor,
+			// While NegOne doesn't really support being a 32-bit hypervisor,
 			// let's still put it in conditional-compilation block
 			#[cfg(target_arch = "x86_64")]
 			{
@@ -740,7 +740,7 @@ impl HypervisorCapabilities for VtHypervisor
 					let mut ept_requirement: bool = true;
 					// We have a series of EPT feature requirements.
 					ept_requirement &= ept_sup.support_wb_ept();
-					// 2MiB-paging is NoirVisor's minimum requirement.
+					// 2MiB-paging is NegOne's minimum requirement.
 					// 1GiB-paging is preferred, but some processors don't support it (e.g.: vCPU in VMware).
 					ept_requirement &= ept_sup.support_2mb_paging();
 					ept_requirement &= ept_sup.support_invept();
@@ -916,7 +916,7 @@ impl HypervisorEssentials for VtHypervisor
 			Some(md) => self.io_bitmap_b = md,
 			None => fail_cleanup!("Failed to allocate I/O-Bitmap B!"),
 		}
-		let vcpu_count = unsafe { noir_get_processor_count() };
+		let vcpu_count = unsafe { negone_get_processor_count() };
 		let mut stack_hi_va = (PAGE_2MB_SIZE as u64).wrapping_neg();
 		let mut alloc_stack = || {
 			stack_hi_va -= (HYPERVISOR_STACK_SIZE + PAGE_SIZE) as u64;
@@ -999,7 +999,7 @@ impl HypervisorEssentials for VtHypervisor
 		unsafe {
 			nvc_store_image_info(&raw mut self.image_base, &raw mut self.image_size);
 			debug!("Base: {:p}, Size: 0x{:X}", self.image_base, self.image_size);
-			noir_generic_call(subvert_processor_thunk, self as *mut Self as *mut c_void);
+			negone_generic_call(subvert_processor_thunk, self as *mut Self as *mut c_void);
 		}
 		sysdprintln!("System Subversion Completed!");
 		Status::SUCCESS

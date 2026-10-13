@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file configures the NoirVisor Core build.
+ * This file configures the NegOne Core build.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability

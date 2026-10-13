@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *

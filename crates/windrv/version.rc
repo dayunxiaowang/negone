@@ -1,6 +1,6 @@
-// NoirVisor Windows Driver Version Resource
+// NegOne Windows Driver Version Resource
 // Copyright 2018-2026, Zero Tang. All rights reserved.
-// https://github.com/Zero-Tang/NoirVisor
+// https://github.com/dayunxiaowang/negone
 
 // The verrsrc.h and ntdef.h files can't be installed in Linux in regular means.
 // So, copy what we may need from them into a local header file.
@@ -23,16 +23,16 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 	{
 		BLOCK "040901B5"
 		{
-			VALUE "Comments", "NoirVisor CVM Scheduler Driver for Windows"
-			VALUE "CompanyName", "zero.tangptr@gmail.com"
-			VALUE "FileDescription", "NoirVisor CVM Scheduler Driver for Windows"
+			VALUE "Comments", "NegOne CVM Scheduler Driver for Windows"
+			VALUE "CompanyName", "NegOne contributors"
+			VALUE "FileDescription", "NegOne CVM Scheduler Driver for Windows"
 			VALUE "FileVersion", "0.1.0"
-			VALUE "InternalName", "NoirVisor"
-			VALUE "LegalCopyright", "Powered by zero.tangptr@gmail.com. All Rights Reserved."
-			VALUE "LegalTrademarks", "Powered by zero.tangptr@gmail.com. All Rights Reserved."
-			VALUE "OriginalFilename", "NoirVisor.sys"
+			VALUE "InternalName", "NegOne"
+			VALUE "LegalCopyright", "Copyright 2018-2026 Zero Tang; NegOne modifications by respective contributors."
+			VALUE "LegalTrademarks", ""
+			VALUE "OriginalFilename", "NegOne.sys"
 			VALUE "PrivateBuild", ""
-			VALUE "ProductName", "NoirVisor Hypervisor for Windows"
+			VALUE "ProductName", "NegOne Hypervisor for Windows"
 			VALUE "ProductVersion", "0.1.0"
 			VALUE "SpecialBuild", ""
 		}

@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the entry point of NoirVisor Core in Rust.
+ * This file is the entry point of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -68,7 +68,7 @@ pub enum ProcessorManufacturer
 }
 
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_get_vendor_string(vstr: *mut u8)
+unsafe extern "C" fn negone_get_vendor_string(vstr: *mut u8)
 {
 	let vendor_id = MaxStandardLeafAndVendorString::cpuid();
 	let s = unsafe { slice::from_raw_parts_mut(vstr, 12) };
@@ -76,7 +76,7 @@ unsafe extern "C" fn noir_get_vendor_string(vstr: *mut u8)
 }
 
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_get_processor_name(pstr: *mut u8)
+unsafe extern "C" fn negone_get_processor_name(pstr: *mut u8)
 {
 	let brand_str = ProcessorBrandString::cpuid();
 	let s = unsafe { slice::from_raw_parts_mut(pstr, 48) };
@@ -132,7 +132,7 @@ pub trait HypervisorEssentials: Send + Sync + CvmHvOps
 static HVM: Once<Box<dyn HypervisorEssentials>> = Once::new();
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_get_virtualization_supportability() -> u32
+extern "C" fn negone_get_virtualization_supportability() -> u32
 {
 	use ProcessorManufacturer::*;
 	let mut vstr_raw: [u8; 12] = [0; 12];
@@ -146,7 +146,7 @@ extern "C" fn noir_get_virtualization_supportability() -> u32
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_is_virtualization_enabled() -> bool
+extern "C" fn negone_is_virtualization_enabled() -> bool
 {
 	use ProcessorManufacturer::*;
 	let mut vstr_raw: [u8; 12] = [0; 12];
@@ -241,9 +241,9 @@ mod panicking
 	{
 		unsafe {
 			// Store the panic log in global variable.
-			PANIC_MESSAGE = format_static!(1024, "NoirVisor {}", panic).unwrap();
+			PANIC_MESSAGE = format_static!(1024, "NegOne {}", panic).unwrap();
 		}
-		error!("\x1b[91mNoirVisor {} \x1b[39m", panic);
+		error!("\x1b[91mNegOne {} \x1b[39m", panic);
 		loop
 		{}
 	}

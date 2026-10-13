@@ -1,4 +1,4 @@
-// NoirVisor CVM Scheduler Driver for Windows
+// NegOne CVM Scheduler Driver for Windows
 // This file handles SEH for x64 Windows.
 
 .text

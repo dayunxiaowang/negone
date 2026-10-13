@@ -1,10 +1,10 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
  * This file implements Decode-Assists and Next-Rip-Saving in AMD-V of
- * NoirVisor Core in Rust if not supported by the processor.
+ * NegOne Core in Rust if not supported by the processor.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -246,7 +246,7 @@ pub(super) trait SoftwareDecodeAssistOps: VmcbOps + EmulatorOps
 
 	fn decode_unknown(&mut self)
 	{
-		// This interception means NoirVisor does not know such interception at all. So panic on interception.
+		// This interception means NegOne does not know such interception at all. So panic on interception.
 		let exit_reason: i64 = unsafe { self.vmread(EXIT_CODE) };
 		panic!("Unknown interception decode request! Intercept Code: 0x{:016X}", exit_reason);
 	}

@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file implements NoirVisor CVM Scheduler IOCTL handlers.
+ * This file implements NegOne CVM Scheduler IOCTL handlers.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -33,7 +33,7 @@ use crate::{
 /// ## Safety
 /// This method is unsafe when it's called more than once.
 #[unsafe(no_mangle)]
-unsafe extern "system" fn noir_cvsched_init() -> bool
+unsafe extern "system" fn negone_cvsched_init() -> bool
 {
 	crate::hvcall::init();
 	unsafe { VM_LIST.init() }
@@ -44,7 +44,7 @@ unsafe extern "system" fn noir_cvsched_init() -> bool
 /// ## Safety
 /// This method is unsafe when this crate is still used after calling this method.
 #[unsafe(no_mangle)]
-unsafe extern "system" fn noir_cvsched_deinit()
+unsafe extern "system" fn negone_cvsched_deinit()
 {
 	unsafe {
 		VM_LIST.deinit();
@@ -63,7 +63,7 @@ macro_rules! check_buffer_args {
 	};
 }
 
-/// The `dispatch_get_capability` function queries the capability of the NoirVisor exposed in the current system.
+/// The `dispatch_get_capability` function queries the capability of the NegOne exposed in the current system.
 ///
 /// ## Safety
 /// This function is safe if and only if all pointers and lengths are valid.
@@ -313,7 +313,7 @@ static DISPATCHER_GROUP: [IoDispatchFn; IOCTL_CODE_MAX] = {
 };
 
 #[unsafe(no_mangle)]
-unsafe extern "system" fn noir_dispatch_ioctl(
+unsafe extern "system" fn negone_dispatch_ioctl(
 	ioctl_code: usize,
 	in_buff: *const c_void,
 	in_size: usize,

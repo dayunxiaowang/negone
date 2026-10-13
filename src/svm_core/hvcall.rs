@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file handles Hypercalls in AMD-V of NoirVisor Core in Rust.
+ * This file handles Hypercalls in AMD-V of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -45,7 +45,7 @@ impl SvmVcpu
 
 	fn hvcall_restore(&mut self, _context: *mut c_void, _context_size: usize) -> Result<Status, (u8, Option<u32>)>
 	{
-		// Since NoirVisor is strictly Type-I Hypervisor, this hypercall code is reserved now.
+		// Since NegOne is strictly Type-I Hypervisor, this hypercall code is reserved now.
 		Err((INVALID_OPCODE_FAULT, None))
 	}
 
@@ -57,7 +57,7 @@ impl SvmVcpu
 
 	fn hvcall_exit_boot_services(&mut self, _context: *mut c_void, _context_size: usize) -> Result<Status, (u8, Option<u32>)>
 	{
-		// If NoirVisor is loaded as a UEFI runtime-driver, this routine will be called by Guest OS.
+		// If NegOne is loaded as a UEFI runtime-driver, this routine will be called by Guest OS.
 		// Current implementation just outputs a log and returns.
 		info!("ExitBootServices event is triggered! UEFI now enters Runtime Stage!");
 		Ok(Status::SUCCESS)

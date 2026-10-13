@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file manages VMCB in NoirVisor Core in Rust.
+ * This file manages VMCB in NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -363,7 +363,7 @@ pub fn svm_msrpm_bit(index: u32, operation: bool) -> Option<u32>
 }
 
 // Using offsets is much easier than defining a structure.
-// This is also how NoirVisor in C operates the VMCB.
+// This is also how NegOne in C operates the VMCB.
 // Control-Area
 pub const INTERCEPT_READ_CR: usize = 0x0;
 pub const INTERCEPT_WRITE_CR: usize = 0x2;

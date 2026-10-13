@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines IOMMU operations for NoirVisor Core in Rust.
+ * This file defines IOMMU operations for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -73,7 +73,7 @@ pub trait IommuOps
 		}
 	}
 
-	/// Protected pages allocated by NoirVisor
+	/// Protected pages allocated by NegOne
 	fn protect_allocated_pages(&mut self)
 	{
 		for p in PAGE_ALLOC_MANAGER.lock().iter()
@@ -103,7 +103,7 @@ pub fn create_iommu() -> Option<Box<dyn IommuOps>>
 	info!("You may try to attack address via DMA at {:p}!", MYDATA.as_ptr());
 	if !(dmar_list.is_empty() || ivrs_list.is_empty())
 	{
-		warn!("NoirVisor does not support using both Intel VT-d and AMD-Vi!");
+		warn!("NegOne does not support using both Intel VT-d and AMD-Vi!");
 		None
 	}
 	else if !dmar_list.is_empty()

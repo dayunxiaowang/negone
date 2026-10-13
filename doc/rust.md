@@ -1,6 +1,6 @@
-# NoirVisor by Rust
-This document describes the plan of remastering NoirVisor with the [Rust](https://www.rust-lang.org) Programming Language. \
-By virtue of the formally-verified memory-safety guaranteed by the compiler, core parts of the NoirVisor will be remastered with Rust.
+# NegOne by Rust
+This document describes the plan of remastering NegOne with the [Rust](https://www.rust-lang.org) Programming Language. \
+By virtue of the formally-verified memory-safety guaranteed by the compiler, core parts of the NegOne will be remastered with Rust.
 
 ## Getting Started
 Install [Visual Studio Code](https://code.visualstudio.com) and [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) extension.
@@ -13,14 +13,14 @@ Trivial assembly codes will be remastered with Rust inline assembly.
 
 Rust codes will be managed with the Cargo package manager. They will be compiled into static library and linked via linker. In other words, we will be calling the `cargo` command from the compiling script.
 
-NoirVisor uses Rust 2024 standard.
+NegOne uses Rust 2024 standard.
 
 ## Allocator
-NoirVisor uses [portable-dlmalloc](https://github.com/Zero-Tang/portable-dlmalloc) as the global allocator. \
+NegOne uses [portable-dlmalloc](https://github.com/Zero-Tang/portable-dlmalloc) as the global allocator. \
 You should avoid using allocators while in VM-Exit handlers! For example, you should use `sort_unstable` instead of `sort` to avoid allocation.
 
 ## Automated Testing
-NoirVisor uses `cargo test` suite to test NoirVisor. However, system subversion and restoration are not currently included in tests yet. \
+NegOne uses `cargo test` suite to test NegOne. However, system subversion and restoration are not currently included in tests yet. \
 To develop test cases, you should toggle `rust-analyzer.cfg.setTest` to true in `rust-analyzer` plugin and then reload VSCode.
 
 ## Modifying Dependencies
@@ -46,7 +46,7 @@ You may add a `.vscode/settings.json` file to configure the behavior of `rust-an
 You would most likely want to configure the `rust-analyzer.cargo.target` variable in order to switch to either Windows or UEFI.
 
 ### UEFI Development
-Create a `.vscode/settings.json` file in NoirVisor root source directory, and write the following:
+Create a `.vscode/settings.json` file in NegOne root source directory, and write the following:
 ```json
 {
 	"rust-analyzer.cfg.setTest": false,
@@ -55,7 +55,7 @@ Create a `.vscode/settings.json` file in NoirVisor root source directory, and wr
 ```
 
 ### Windows Driver Development
-Create a `.vscode/settings.json` file in NoirVisor root source directory, and write the following:
+Create a `.vscode/settings.json` file in NegOne root source directory, and write the following:
 ```json
 {
 	"rust-analyzer.cfg.setTest": false,
@@ -67,10 +67,10 @@ Create a `.vscode/settings.json` file in NoirVisor root source directory, and wr
 Make sure `rust-analyzer.cfg.setTest` json entry is set to `true`. However, you need to set it to `false` if you are modifying the panic handler.
 
 ## Coding Style
-The coding style for NoirVisor in Rust is probably drastically different than most projects you have seen:
+The coding style for NegOne in Rust is probably drastically different than most projects you have seen:
 
 - Use Tab (i.e.: `'\t'`) to indent. Each Tab is considered 4 spaces. \
-	When you share codes in NoirVisor via GitHub, make sure to append `?ts=4` suffix on the URL.
+	When you share codes in NegOne via GitHub, make sure to append `?ts=4` suffix on the URL.
 - The maximum length per line is 135 under the following conditions:
 	- Each line should have at most one statement. This means when you typed a semicolon to end the statement, only comments are allowed to the follow on this line. \
 		This means short statements are not allowed to merge into the same line, even if they are super short. For example, the following is not allowed:

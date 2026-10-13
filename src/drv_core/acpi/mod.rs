@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the ACPI Driver of NoirVisor Core in Rust.
+ * This file is the ACPI Driver of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -33,7 +33,7 @@ static RSDT_LENGTH: AtomicUsize = AtomicUsize::new(0);
 static ACPI_MANAGER: RwLock<AcpiManager> = RwLock::new(AcpiManager { table: Vec::new() });
 
 unsafe extern "C" {
-	fn noir_locate_acpi_rsdt(length: *mut usize) -> *mut SystemDescriptionHeader;
+	fn negone_locate_acpi_rsdt(length: *mut usize) -> *mut SystemDescriptionHeader;
 }
 
 struct AcpiManager
@@ -120,7 +120,7 @@ pub fn search_acpi_table(signature: AcpiSystemDescriptorSignature, f: impl FnMut
 extern "C" fn nvc_acpi_initialize() -> Status
 {
 	let mut rsdt_len: usize = 0;
-	RSDT_BASE_ADDRESS.store(unsafe { noir_locate_acpi_rsdt(&raw mut rsdt_len) }, Ordering::Relaxed);
+	RSDT_BASE_ADDRESS.store(unsafe { negone_locate_acpi_rsdt(&raw mut rsdt_len) }, Ordering::Relaxed);
 	RSDT_LENGTH.store(rsdt_len, Ordering::Relaxed);
 	let ptr_head = RSDT_BASE_ADDRESS.load(Ordering::Relaxed);
 	let mut acpi_mgr = ACPI_MANAGER.write();

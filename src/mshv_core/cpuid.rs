@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines Microsoft TLFS CPUID for NoirVisor Core in Rust.
+ * This file defines Microsoft TLFS CPUID for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -16,7 +16,7 @@ use bitfield_struct::bitfield;
 
 use crate::{HVM, xpf_core::x86::cpuid::CpuidLeaf};
 
-static HYPERVISOR_VENDOR_STRING: &str = "NoirVisor ZT";
+static HYPERVISOR_VENDOR_STRING: &str = "NegOne VMM  ";
 
 fn nvc_mshv_cpuid_hypervisor_vendor_id_handler(_ia: u32, _ic: u32) -> (u32, u32, u32, u32)
 {

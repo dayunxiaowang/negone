@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines ACPI tables for NoirVisor Core in Rust.
+ * This file defines ACPI tables for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -72,7 +72,7 @@ macro_rules! make_acpi_signature {
 
 impl AcpiSystemDescriptorSignature
 {
-	// Currently we'd only define the signatures which might be used by NoirVisor.
+	// Currently we'd only define the signatures which might be used by NegOne.
 	make_acpi_signature!(MULTIPLE_APIC_DESCRIPTION_TABLE, b"APIC");
 	make_acpi_signature!(DMA_REMAPPING_TABLE, b"DMAR");
 	make_acpi_signature!(DIFFERENTIATED_SYSTEM_DESCRIPTION_TABLE, b"DSDT");

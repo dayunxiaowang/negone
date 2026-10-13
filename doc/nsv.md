@@ -1,3 +1,5 @@
+> Upstream NoirVisor design/history retained for attribution and reference. This document does not establish implemented NegOne functionality.
+
 # NoirVisor Secure Virtualization
 This document provides the specification of NoirVisor Secure Virtualization (NSV). This is the preliminary draft version of document.
 

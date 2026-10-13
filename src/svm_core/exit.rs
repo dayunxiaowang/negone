@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file handles VM-Exits in AMD-V of NoirVisor Core in Rust.
+ * This file handles VM-Exits in AMD-V of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -187,7 +187,7 @@ impl SvmVcpu
 						c &= !CPUID_OSXSAVE;
 					}
 				}
-				// NoirVisor currently does not support nested virtualization.
+				// NegOne currently does not support nested virtualization.
 				CPUID_EXT_PROCESSOR_FEATURE => c &= !CPUID_SVM,
 				CPUID_EXT_SECURE_VIRTUAL_MACHINE_FEATURE => (a, b, c, d) = (0, 0, 0, 0),
 				_ => (),
@@ -373,7 +373,7 @@ impl SvmVcpu
 		let cpl = self.read_cpl();
 		if cpl != 0
 		{
-			error!("NoirVisor forbids user-mode hypercalls!");
+			error!("NegOne forbids user-mode hypercalls!");
 			self.inject_event(INVALID_OPCODE_FAULT, EventType::HardwareException, None, true);
 			return;
 		}

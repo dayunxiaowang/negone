@@ -1,10 +1,10 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
  * This file helps fetching and decoding instructions in Intel VT-x of
- * NoirVisor Core in Rust since it's not supported in the processor.
+ * NegOne Core in Rust since it's not supported in the processor.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability

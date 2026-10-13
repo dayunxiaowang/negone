@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the CI (Code Integrity) Component of NoirVisor Core in Rust.
+ * This file is the CI (Code Integrity) Component of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -17,7 +17,7 @@ use bitfield_struct::bitfield;
 use log::*;
 use spin::RwLock;
 
-use super::nvbdk::{bytes_to_pages, noir_get_physical_address, page_count, page_mult};
+use super::nvbdk::{bytes_to_pages, negone_get_physical_address, page_count, page_mult};
 
 #[bitfield(u64)]
 pub struct CiPage
@@ -108,9 +108,9 @@ pub fn is_ci_phys_page(phys: u64) -> bool
 }
 
 /// # Safety
-/// `noir_add_section_to_ci` must be called by C functions.
+/// `negone_add_section_to_ci` must be called by C functions.
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_add_section_to_ci(base: *mut c_void, size: usize, delay: bool) -> bool
+unsafe extern "C" fn negone_add_section_to_ci(base: *mut c_void, size: usize, delay: bool) -> bool
 {
 	let page_num = bytes_to_pages(size);
 	let mut ci = CI_MANAGER.write();
@@ -118,7 +118,7 @@ unsafe extern "C" fn noir_add_section_to_ci(base: *mut c_void, size: usize, dela
 	{
 		let phys = unsafe {
 			let virt = base.byte_add(page_mult(i));
-			noir_get_physical_address(virt)
+			negone_get_physical_address(virt)
 		};
 		ci.add_page(phys, delay);
 	}
@@ -126,16 +126,16 @@ unsafe extern "C" fn noir_add_section_to_ci(base: *mut c_void, size: usize, dela
 }
 
 /// # Safety
-/// `noir_activate_ci` must be called by C functions.
+/// `negone_activate_ci` must be called by C functions.
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_activate_ci() -> bool
+unsafe extern "C" fn negone_activate_ci() -> bool
 {
 	CI_MANAGER.write().activate();
 	true
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_initialize_ci(soft_ci: bool, hard_ci: bool) -> bool
+extern "C" fn negone_initialize_ci(soft_ci: bool, hard_ci: bool) -> bool
 {
 	if soft_ci
 	{
@@ -154,7 +154,7 @@ extern "C" fn noir_initialize_ci(soft_ci: bool, hard_ci: bool) -> bool
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_finalize_ci()
+extern "C" fn negone_finalize_ci()
 {
 	// There is nothing to do in Rust when we finalize CI.
 }

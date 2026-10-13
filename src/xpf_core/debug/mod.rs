@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the Debugger of NoirVisor Core in Rust.
+ * This file is the Debugger of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -35,14 +35,14 @@ mod serial;
 mod unknown;
 
 unsafe extern "C" {
-	/// ## `noir_system_debugger_write` Function
+	/// ## `negone_system_debugger_write` Function
 	/// This function will use the system's debugger to log outputs. \
 	/// However, not all circumstances will allow usage of this debug output.
 	///
 	/// ## Safety
 	/// The `maximum_length` specifies the maximum size of the `string`. \
 	/// If the `string` contains a null-terminator `\0`, the output will stop there.
-	fn noir_system_debugger_write(string: *const u8, maximum_length: usize);
+	fn negone_system_debugger_write(string: *const u8, maximum_length: usize);
 }
 
 /// Asynchronous Log Header
@@ -220,7 +220,7 @@ pub fn system_print(args: fmt::Arguments)
 	if r.is_ok()
 	{
 		unsafe {
-			noir_system_debugger_write(w.as_bytes().as_ptr(), w.as_bytes().len());
+			negone_system_debugger_write(w.as_bytes().as_ptr(), w.as_bytes().len());
 		}
 	}
 }
@@ -228,7 +228,7 @@ pub fn system_print(args: fmt::Arguments)
 /// # Safety
 /// Make sure `buffer` has the size of `length`.
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_debug_output(buffer: *const u8, length: usize)
+unsafe extern "C" fn negone_debug_output(buffer: *const u8, length: usize)
 {
 	let d = DEBUGGER.lock();
 	unsafe {
@@ -239,7 +239,7 @@ unsafe extern "C" fn noir_debug_output(buffer: *const u8, length: usize)
 /// # Safety
 /// Make sure `buffer` has the size of `length` and is mutable.
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_debug_input(buffer: *mut u8, length: usize)
+unsafe extern "C" fn negone_debug_input(buffer: *mut u8, length: usize)
 {
 	let d = DEBUGGER.lock();
 	unsafe {
@@ -302,7 +302,7 @@ enum DebuggerConfig
 static mut DEBUGGER_CONFIG: DebuggerConfig = DebuggerConfig::Unknown;
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_configure_serial_port_debugger(_port_number: u8, port_base: u16, baud_rate: u32) -> Status
+extern "C" fn negone_configure_serial_port_debugger(_port_number: u8, port_base: u16, baud_rate: u32) -> Status
 {
 	unsafe {
 		DEBUGGER_CONFIG = DebuggerConfig::Serial(port_base, baud_rate);
@@ -312,7 +312,7 @@ extern "C" fn noir_configure_serial_port_debugger(_port_number: u8, port_base: u
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_configure_qemu_debug_console(port: u16) -> Status
+extern "C" fn negone_configure_qemu_debug_console(port: u16) -> Status
 {
 	unsafe {
 		DEBUGGER_CONFIG = DebuggerConfig::QemuDebugCon(port);

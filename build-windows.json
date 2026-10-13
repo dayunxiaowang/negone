@@ -16,19 +16,19 @@
 			"cmd":["llvm-lib","/def:./crates/windrv/import.def","/machine:X64","/out:./bin/{outdir}/ntoskrnl.lib"],
 			"cancel_if_intact":["./crates/windrv/import.def"]
 		},
-		"NoirVisor":
+		"NegOne":
 		{
-			"cmd":["lld-link","./target/x86_64-pc-windows-msvc/{cargo_preset}/cvsched.lib","{objpath}/version.res","./bin/{outdir}/ntoskrnl.lib","/OUT:./bin/{outdir}/NoirVisor-unsigned.sys","/SUBSYSTEM:NATIVE","/ENTRY:NoirDriverEntry","/PDB:./bin/{outdir}/NoirVisor.pdb"],
+			"cmd":["lld-link","./target/x86_64-pc-windows-msvc/{cargo_preset}/cvsched.lib","{objpath}/version.res","./bin/{outdir}/ntoskrnl.lib","/OUT:./bin/{outdir}/NegOne-unsigned.sys","/SUBSYSTEM:NATIVE","/ENTRY:NegOneDriverEntry","/PDB:./bin/{outdir}/NegOne.pdb"],
 			"dependencies":["cargo","version","import"]
 		},
 		"pre-sign":
 		{
-			"cmd":["{python}","rm.py","./bin/{outdir}/NoirVisor.sys"]
+			"cmd":["{python}","rm.py","./bin/{outdir}/NegOne.sys"]
 		},
 		"sign":
 		{
-			"cmd":["osslsigncode","sign","-h","sha1","-pkcs12","./build/ztnxtest.pfx","-in","./bin/{outdir}/NoirVisor-unsigned.sys","-out","./bin/{outdir}/NoirVisor.sys"],
-			"dependencies":["NoirVisor","pre-sign"],
+			"cmd":["osslsigncode","sign","-h","sha1","-pkcs12","./build/ztnxtest.pfx","-in","./bin/{outdir}/NegOne-unsigned.sys","-out","./bin/{outdir}/NegOne.sys"],
+			"dependencies":["NegOne","pre-sign"],
 			"cancel_if_opt":true
 		}
 	},

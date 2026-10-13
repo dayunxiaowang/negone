@@ -1,86 +1,85 @@
-# NoirVisor
-NoirVisor - The Grimoire Hypervisor solution for AMD64 Processors.
+# NegOne
 
-<p align=center>
-    <img src="https://img.shields.io/github/license/Zero-Tang/NoirVisor?color=blue&style=flat">
-    <a href="https://discord.gg/5cKn5FdK6U">
-        <img src="https://img.shields.io/discord/796222913774354432?color=red&label=Discord&style=flat">
-    </a>
-    <img src="https://img.shields.io/github/stars/Zero-Tang/NoirVisor?color=orange">
-    <img src="https://img.shields.io/github/forks/Zero-Tang/NoirVisor?color=silver">
-    <a href="https://qm.qq.com/cgi-bin/qm/qr?k=ly7ROfTm6VD9pBuw6zI85TuYaWCu3li8&jump_from=webapi">
-        <img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="NoirVisor虚拟化交流群" title="769616136">
-    </a>
-</p>
+NegOne is a Rust Type-1 hypervisor for x86-64 processors. Its name refers to the conventional "Ring -1" description of hardware virtualization mode.
 
-Tips: if the link for QQ Group does not work, try to hover the icon over the shield icon and see text.
+NegOne is an independently maintained fork of [NoirVisor](https://github.com/Zero-Tang/NoirVisor), based on the upstream `rust-dev` branch at commit `69f1a459a2ef4182d4ea929bf2126912180ba862`. Original copyright notices and the MIT / Apache-2.0 licenses are retained.
 
-# Introduction
-NoirVisor is a Type-1 bluepill hypervisor that aims to provide custom virtualization and secure computing services.
+- Repository: [dayunxiaowang/negone](https://github.com/dayunxiaowang/negone)
+- Development branch: `rust-dev`
+- Fork history and interface compatibility: [doc/fork.md](doc/fork.md)
+- Initial build/check results and remaining environment gaps: [doc/validation.md](doc/validation.md)
+- Build instructions: [doc/make.md](doc/make.md)
+- Configuration and debugging: [doc/configuration.md](doc/configuration.md), [doc/debug.md](doc/debug.md)
 
-**IMPORTANT NOTES:** If you're looking for a stealthy hypervisor implementation, you're at the wrong place.
+## Architecture and current status
 
-# Processor Requirement
-Your CPU must support either Intel VT-x /w EPT or AMD-V /w NPT. However, this does not mean only Intel and AMD CPUs are supported.
+The UEFI application loads `NegOne.efi` before the operating system starts. The hypervisor initializes Intel VT-x / EPT or AMD-V / NPT and continues booting the operating system inside the virtualized environment.
 
-- Processors produced by Intel, VIA, Zhaoxin (兆芯) and Montage (澜起) may support Intel VT-x. \
-- Processors produced by AMD and Hygon (海光) may support AMD-V.
+The Windows driver, `NegOne.sys`, supplies the Customizable VM (CVM) scheduler and management interface. Loading this driver alone does not start the UEFI hypervisor or virtualize an already-running Windows installation.
 
-# Build
-See [documentation](./doc/make.md) for more information about preparation and using python script to build NoirVisor.
+The inherited Rust implementation is still under development:
 
-# Run
-To run NoirVisor, you will have to boot NoirVisor's hypervisor before an OS loads
+- Both Intel and AMD have system virtualization backends.
+- AMD has CVM VM/vCPU and memory-mapping implementations; Intel CVM operations remain incomplete.
+- The upstream documentation limits booting Windows from UEFI to a single-core scenario.
+- The retained NSV and Parhelion documents describe upstream designs, not completed NegOne features.
 
-## Windows Driver
-If you the NoirVisor service is not installed:
-```bat
-sc create NoirVisor type= kernel binPath= <Path to NoirVisor driver file>
-```
-Once NoirVisor service is installed, start the driver:
-```bat
-sc start NoirVisor
+This fork does not claim stealth or production readiness.
+
+## Build
+
+Use Rust nightly with Clippy, rustfmt, and the `x86_64-unknown-uefi` target. The build also uses LLVM tools and NASM; image packaging uses GNU mtools and, for VHDX/VMDK conversion, `qemu-img`. See [the build guide](doc/make.md) for the complete prerequisites.
+
+```text
+python make.py check
+python make.py test
+python make.py /target uefi
+python make.py /target windows
 ```
 
-You may unload NoirVisor by using command-line:
-```bat
-sc stop NoirVisor
+The core Cargo package is `negone-core`. The public CVM crate remains `nvcvm` for source compatibility.
+
+Windows can produce the build artifacts while a separate Linux machine runs QEMU. Transfer the UEFI image to the same relative location expected by `tests/run_qemu.py`, for example `bin/compchk_uefix64/NegOne-Uefi.img` for a checked build. On Linux, use `python3` where appropriate.
+
+## UEFI boot files
+
+The generated image contains:
+
+```text
+\EFI\BOOT\bootx64.efi
+\NegOne.efi
+\NegOneConfig.bin
+\cvsched.efi
 ```
-If you need to uninstall NoirVisor service:
-```bat
-sc delete NoirVisor
+
+`bootx64.efi` keeps its standard UEFI fallback filename. The loader and configuration paths are updated together with the build manifests.
+
+## Windows CVM driver
+
+After the UEFI hypervisor has booted and the driver has been prepared for the target Windows environment:
+
+```text
+sc create NegOne type= kernel binPath= <absolute path to NegOne.sys>
+sc start NegOne
 ```
 
-## EFI Application and Runtime Driver
-There are several methods to run NoirVisor.
+To stop or remove the driver service:
 
-### Running on a physical machine
-This method can also be used on VMware. \
-Use a USB flash stick and setup with GUID Partition Table (GPT). Construct a partition and format it info FAT32 file system. After you successfully build the image, you should see two images: `bootx64.efi` and `NoirVisor.efi` \
-Those two files are EFI Application and Runtime Driver respectively. \
-Copy EFI Application to `\EFI\BOOT\bootx64.efi` \
-Copy EFI Runtime Driver to `\NoirVisor.efi` \
-As the USB flash stick is ready, enter your firmware settings and set it prior to the operating system. Disable Secure Boot feature unless you can sign the executable.
+```text
+sc stop NegOne
+sc delete NegOne
+```
 
-### Running on a virtual machine
-After you built NoirVisor, several virtual disk image options are available: `raw`, `vhdx` and `vmdk`. Add the image to your virtual machine as a hard drive. \
-Also see [Quick Start on Emulators](/doc/debug.md#quick-start-on-emulators).
+The driver exposes `\Device\NegOne` and `\DosDevices\NegOne`. Applications should rebuild against this fork's `nvcvm` library to use the new device path. The driver service above is distinct from any future user-mode management service.
 
-# Documents
-This repository provides [additional documents](/doc/readme.md) which help new developers to join development.
+## Contributing and security
 
-# Customizable VM
-Customizable VM is a feature that provides a set of APIs to run an arbitrary guest, instead of to just subvert the host system. In a word, it is aimed to be a competitor of the Windows Hypervisor Platform (WHP).
+Submit NegOne changes to this repository's `rust-dev` branch. See [contributing.md](contributing.md) and [AGENTS.md](AGENTS.md) for development requirements.
 
-# Security Advisories
-You should not report security vulnerabilities through the GitHub issue. You should [read this document](./security.md) to check out the steps to report security vulnerability.
+Report vulnerabilities through the private channel described in [security.md](security.md).
 
-# Publications
-Here lists some informal publications (blogs) regarding hypervisor development:
+## License and attribution
 
-- Extending the Tradition Hypervisor's Approach of System Call Hooking in the Post-2018 Windows Operating Systems: https://tangptr.com/?p=149
-- MTRR Emulation: Beginner’s Common Mistake in EPT Setup: https://tangptr.com/?p=163
-- Introduction to NoirVisor CVM: The Open-Source Alternative of the Windows Hypervisor Platform: https://tangptr.com/?p=173
+NegOne retains the upstream [MIT](LICENSE-MIT) / [Apache-2.0](LICENSE-APACHE) dual licensing. The `nvcvm` crate retains its MIT license. Original code is copyright Zero Tang and its respective contributors; the Git history records subsequent NegOne changes.
 
-# License
-This repository is dual licensed with [MIT](./LICENSE-MIT) and [Apache-2.0](./LICENSE-APACHE), just like [rust](https://github.com/rust-lang/rust/blob/main/COPYRIGHT).
+The original project, publications, and historical designs remain credited to their authors. This fork is maintained separately from the upstream NoirVisor project.

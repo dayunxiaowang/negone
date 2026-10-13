@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file handles Hypercalls in Intel VT-x of NoirVisor Core in Rust.
+ * This file handles Hypercalls in Intel VT-x of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -28,7 +28,7 @@ impl VtVcpu
 
 	fn hvcall_restore(&mut self, _code: u32, _context: *mut c_void) -> Result<Status, (u8, Option<u32>)>
 	{
-		// Since NoirVisor is strictly Type-I Hypervisor, this hypercall code is reserved now.
+		// Since NegOne is strictly Type-I Hypervisor, this hypercall code is reserved now.
 		Err((INVALID_OPCODE_FAULT, None))
 	}
 

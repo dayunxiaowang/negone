@@ -1,16 +1,9 @@
-# Security Policy
-This document defines the policy of security-related issues.
+# NegOne Security Policy
 
-## Reporting Vulnerabilities
-Please report security issues [by email](mailto:zero.tangptr@gmail.com). \
-Your report should at least include the following items:
+## Reporting vulnerabilities
 
-- How did you find this vulnerability?
-- Are there any repositories related to Project NoirVisor (e.g.: the [NoirCvmApi](https://github.com/Zero-Tang/NoirCvmApi)) being affected by this vulnerability? If you are not sure, state the potential hazards.
-- Are there any specific hardware requirements to reproduce this vulnerability?
-- Please provide with clarified exemplifications.
-- Who are you? How should Project NoirVisor refer you in security advisories? You are free to keep an anonymous identity, if you understand that no ascriptions of this report will be given to anyone unless there is someone else reported the same vulnerability without keeping an anonymous identity.
-- Do you waive the right to choose a date for releasing the security advisory? If you don't waive this right, please specify the date. If you don't answer this question, you must agree to waive this right.
+Report NegOne vulnerabilities privately using [GitHub private vulnerability reporting](https://github.com/dayunxiaowang/negone/security/advisories/new). Private reporting is enabled for this repository.
 
-## Security Advisories
-Security Advisories will be available to the public after the errata are materialized. The exact date of release for a specific vulnerability depends on discussion with the reporter. If the reporter waives the right to choose a date, Project NoirVisor would release the advisory on its specific schedule.
+Include the affected revision, CPU and virtualization backend, build configuration, reproduction steps, and observed impact. Avoid putting unreported vulnerability details in public issues.
+
+NegOne is maintained independently from NoirVisor. If a finding also affects unmodified upstream code, identify the upstream revision and coordinate disclosure with both projects. The [upstream security policy](https://github.com/Zero-Tang/NoirVisor/blob/rust-dev/security.md) applies to reports sent to the original project.

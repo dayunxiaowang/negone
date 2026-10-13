@@ -65,7 +65,7 @@ if __name__=="__main__":
 			f.write(b'\0'*image_size)
 			f.close()
 		# Format Disk Image.
-		subprocess.call(["mformat","-i",output_file,"-v","NoirVisor","-T",str(sector_num),"::"])
+		subprocess.call(["mformat","-i",output_file,"-v","NegOne","-T",str(sector_num),"::"])
 		# Make Directories.
 		for md in mkdir_orders:
 			subprocess.call(["mmd","-i",output_file,md])
@@ -73,4 +73,4 @@ if __name__=="__main__":
 		for fn in copy_orders:
 			subprocess.call(["mcopy","-i",output_file,fn,copy_orders[fn]])
 	else:
-		print("GNU mtools are missing! Add them to the PATH in order to build a raw NoirVisor disk image!")
+		print("GNU mtools are missing! Add them to the PATH in order to build a raw NegOne disk image!")

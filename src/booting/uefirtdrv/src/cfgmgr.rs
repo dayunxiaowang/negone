@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
@@ -78,7 +78,7 @@ impl ConfigurationList
 				{
 					let root_file = unsafe { &*root_file_ptr };
 					let mut cfg_file_ptr: *mut file::Protocol = null_mut();
-					let mut cfg_file_path = utf16_null!("NoirVisorConfig.bin");
+					let mut cfg_file_path = utf16_null!("NegOneConfig.bin");
 					let st = unsafe {
 						(root_file.open)(root_file_ptr, &raw mut cfg_file_ptr, cfg_file_path.as_mut_ptr(), file::MODE_READ, 0)
 					};

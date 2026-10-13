@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines the NoirVisor CVM interface for Windows.
+ * This file defines the NegOne CVM interface for Windows.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -48,7 +48,7 @@ const fn ctl_code(dev_type: u32, fn_code: u32, method: u32, access: u32) -> u32
 	(dev_type << 16) | (access << 14) | (fn_code << 2) | method
 }
 
-/// Calls into the NoirVisor CVM Scheduler Driver.
+/// Calls into the NegOne CVM Scheduler Driver.
 ///
 /// ## Safety
 /// You must ensure `in_buff` and `out_buff` are valid pointers.
@@ -109,7 +109,7 @@ pub unsafe fn deinit()
 #[cfg(feature = "user")]
 pub unsafe fn init() -> NTSTATUS
 {
-	const DEVICE_NAME: [u16; 17] = utf16!("\\Device\\NoirVisor");
+	const DEVICE_NAME: [u16; 14] = utf16!("\\Device\\NegOne");
 	// Open the device and get the handle.
 	let name = UNICODE_STRING {
 		Length: (DEVICE_NAME.len() << 1) as u16,

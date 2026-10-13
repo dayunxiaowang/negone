@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the AMD-V driver of NoirVisor Core in Rust.
+ * This file is the AMD-V driver of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -493,7 +493,7 @@ impl Default for SvmHypervisor
 		// ASID 0 and 1 are reserved.
 		asid_pool[0] = 3;
 		Self {
-			vcpus: Vec::with_capacity(unsafe { noir_get_processor_count() as usize }),
+			vcpus: Vec::with_capacity(unsafe { negone_get_processor_count() as usize }),
 			msrpm: MemoryDescriptor::null(),
 			iopm: MemoryDescriptor::null(),
 			nptm: SvmNptManager::default(),
@@ -618,7 +618,7 @@ impl HypervisorEssentials for SvmHypervisor
 			None => fail_cleanup!("Failed to allocate I/O Permission-Map!"),
 		}
 		debug!("MSRPM: 0x{:016X}, IOPM: 0x{:016X}", self.msrpm.phys, self.iopm.phys);
-		let vcpu_count = unsafe { noir_get_processor_count() };
+		let vcpu_count = unsafe { negone_get_processor_count() };
 		let mut stack_hi_va = (PAGE_2MB_SIZE as u64).wrapping_neg();
 		let mut alloc_stack = || {
 			stack_hi_va -= (HYPERVISOR_STACK_SIZE + PAGE_SIZE) as u64;
@@ -708,7 +708,7 @@ impl HypervisorEssentials for SvmHypervisor
 		unsafe {
 			nvc_store_image_info(&raw mut self.image_base, &raw mut self.image_size);
 			debug!("Base: {:p}, Size: 0x{:X}", self.image_base, self.image_size);
-			noir_generic_call(subvert_processor_thunk, self as *mut Self as *mut c_void);
+			negone_generic_call(subvert_processor_thunk, self as *mut Self as *mut c_void);
 		}
 		info!("System subversion completed!");
 		Status::SUCCESS

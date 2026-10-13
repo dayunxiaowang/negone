@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines assembly-based utilities of NoirVisor Core in Rust.
+ * This file defines assembly-based utilities of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -908,7 +908,7 @@ pub mod misc
 
 	/// # Safety
 	/// This function will purposefully generate an `ud2` instruction.
-	/// Use this function only to test panic handler of NoirVisor!
+	/// Use this function only to test panic handler of NegOne!
 	#[inline]
 	pub unsafe fn ud2()
 	{

@@ -3,8 +3,8 @@ name = "nvcvm"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "NoirVisor Customizable Virtual Machine (CVM) Library for User Hypervisors"
-repository = "https://github.com/Zero-Tang/NoirVisor"
+description = "NegOne Customizable Virtual Machine (CVM) Library for User Hypervisors"
+repository = "https://github.com/dayunxiaowang/negone"
 readme = "readme.md"
 keywords = ["no_std","hypervisor","vmm"]
 categories = ["no-std","virtualization"]
@@ -28,6 +28,6 @@ features = ["Wdk_Foundation","Wdk_Storage_FileSystem","Wdk_System_SystemServices
 user = ["dep:utf16_lit"]
 # Kernel scheduler should use this feature.
 kernel = []
-# Only NoirVisor may use this feature.
+# Only NegOne may use this feature.
 hypervisor = []
 default = ["kernel"]

@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the entry point for the NoirVisor UEFI Helper Library.
+ * This file is the entry point for the NegOne UEFI Helper Library.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -423,6 +423,8 @@ pub unsafe fn convert_device_path_to_text(path: *mut device_path::Protocol) -> S
 	}
 }
 
+/// ## Safety
+/// The runtime services table must be initialized and remain valid for the firmware call.
 pub unsafe fn shutdown() -> !
 {
 	unsafe {
@@ -430,7 +432,9 @@ pub unsafe fn shutdown() -> !
 		(rt.reset_system)(RESET_SHUTDOWN, Status::SUCCESS, 0, null_mut());
 	}
 	loop
-	{}
+	{
+		core::hint::spin_loop();
+	}
 }
 
 /// ## Safety

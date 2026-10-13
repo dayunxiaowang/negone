@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines the NoirVisor CVM interface types.
+ * This file defines the NegOne CVM interface types.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -51,7 +51,7 @@ pub struct CvmMapping
 	/// Address-space identifier.
 	/// - `0` for default memory space.
 	/// - `1` for System-Management RAM (SMRAM) on x86.
-	/// - `2..0x80000000` are reserved by NoirVisor.
+	/// - `2..0x80000000` are reserved by NegOne.
 	/// - `0x80000000..=0xFFFFFFFF` are free, but must after being created, to use.
 	pub as_id: u32,
 	/// To map, one of R/W/X bit must be set.\
@@ -152,7 +152,7 @@ impl InterceptCode
 	/// A physical interrupt arrived during vCPU's execution. \
 	/// User hypervisor should ignore this VM-Exit and continue its execution.
 	pub const SCHEDULER_EXIT: Self = Self(0x80000000);
-	/// NoirVisor encountered an internal bug.
+	/// NegOne encountered an internal bug.
 	/// User hypervisor should panic upon such exit.
 	pub const SCHEDULER_BUG: Self = Self(0x80000001);
 }
@@ -266,7 +266,7 @@ pub struct CvmMemoryAccessFlags
 pub struct MemoryAccessContext
 {
 	pub access: CvmMemoryAccessInfo,
-	/// In case NoirVisor couldn't decode the instruction,
+	/// In case NegOne couldn't decode the instruction,
 	/// you can decode the instruction on your own.
 	pub instruction_bytes: [u8; 15],
 	pub gpa: u64,
@@ -377,7 +377,7 @@ pub struct X64SyncFlags
 #[repr(C, align(4096))]
 pub struct Vpcb
 {
-	/// The intercept code of VM-Exit defined by NoirVisor.
+	/// The intercept code of VM-Exit defined by NegOne.
 	pub intercept_code: InterceptCode,
 	/// If true, intercept the vCPU execution once the
 	/// vCPU stops masking interrupts.

@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
@@ -312,13 +312,13 @@ impl IntelIommuPageTableOps for SsPte
 	type PageSizeVariant = SsPte;
 }
 
-// TODO: Add Scalable-Mode-related structures when NoirVisor really uses them.
+// TODO: Add Scalable-Mode-related structures when NegOne really uses them.
 // - Scalable-Mode Root Entry
 // - Scalable-Mode PASID Directory Entry
 // - Scalable-Mode PASID Table Entry
 // - First-Stage Paging Entry
 
-// The following structures are NoirVisor's paging manager.
+// The following structures are NegOne's paging manager.
 
 pub struct VtdPageTableDescriptor<T: Sized, A: ContiguousAllocator = InternalPageAllocator>
 {

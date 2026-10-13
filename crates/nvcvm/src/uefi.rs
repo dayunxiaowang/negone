@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines the NoirVisor CVM interface for UEFI.
+ * This file defines the NegOne CVM interface for UEFI.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -25,7 +25,7 @@ use r_efi::efi::{Status as EfiStatus, SystemTable};
 use crate::status::Status;
 
 #[repr(C)]
-pub struct NoirVisorCvmSchedulingProtocol
+pub struct NegOneCvmSchedulingProtocol
 {
 	pub revision: u32,
 	/// The routine that emulate IOCTL for CVM Scheduler routines.
@@ -38,14 +38,16 @@ pub struct NoirVisorCvmSchedulingProtocol
 	) -> Status,
 }
 
-impl NoirVisorCvmSchedulingProtocol
+impl NegOneCvmSchedulingProtocol
 {
 	// GUID: {850D29B7-33DF-4FDD-B30D-19519F042440}
 	pub const GUID: Guid = Guid::from_fields(0x850d29b7, 0x33df, 0x4fdd, 0xb3, 0x0d, &[0x19, 0x51, 0x9f, 0x4, 0x24, 0x40]);
 }
 
+pub type NoirVisorCvmSchedulingProtocol = NegOneCvmSchedulingProtocol;
+
 #[cfg(all(target_os = "uefi", feature = "user"))]
-static CVM_PROTOCOL: AtomicPtr<NoirVisorCvmSchedulingProtocol> = AtomicPtr::new(null_mut());
+static CVM_PROTOCOL: AtomicPtr<NegOneCvmSchedulingProtocol> = AtomicPtr::new(null_mut());
 
 /// Emulates the IOCTL API exposed in regular OS.
 ///
@@ -68,7 +70,7 @@ pub unsafe fn do_ioctl<I: Sized, O: Sized>(code: usize, in_buff: *const I, out_b
 pub unsafe fn init(system_table: *const SystemTable) -> EfiStatus
 {
 	use core::mem::MaybeUninit;
-	let mut guid = NoirVisorCvmSchedulingProtocol::GUID;
+	let mut guid = NegOneCvmSchedulingProtocol::GUID;
 	let mut protocol: MaybeUninit<*mut c_void> = MaybeUninit::uninit();
 	unsafe {
 		let bs = &*(*system_table).boot_services;

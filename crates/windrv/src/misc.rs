@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
@@ -82,7 +82,7 @@ unsafe extern "C" {
 }
 
 unsafe extern "system" {
-	safe fn noir_notify_process_termination(process_id: u32);
+	safe fn negone_notify_process_termination(process_id: u32);
 }
 
 const DPFLTR_ERROR_LEVEL: u32 = 0;
@@ -257,7 +257,7 @@ pub unsafe extern "system" fn create_process_notify_fn(_parent_id: HANDLE, proce
 {
 	if !create
 	{
-		noir_notify_process_termination(process_id as u32);
+		negone_notify_process_termination(process_id as u32);
 	}
 }
 

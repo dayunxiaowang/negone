@@ -1,3 +1,5 @@
+> Upstream NoirVisor design/history retained for attribution and reference. This document does not establish implemented NegOne functionality.
+
 # Parhelion
 This is a formalized version to NoirVisor Secure Virtualization.
 

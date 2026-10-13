@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file lists builds x86 host environment for NoirVisor Core in Rust.
+ * This file lists builds x86 host environment for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -158,7 +158,7 @@ impl Default for HostPaging
 		unsafe {
 			// CR3 might contain PCID. Clear it.
 			let scr3_phys = page_4kb_base(read_cr3());
-			let scr3_virt = noir_find_virt_by_phys(scr3_phys);
+			let scr3_virt = negone_find_virt_by_phys(scr3_phys);
 			debug!("System CR3 Virt: {scr3_virt:p}, Phys: 0x{scr3_phys:016X}");
 			memcpy(r.cr3.virt.cast(), scr3_virt, PAGE_SIZE);
 			let pml4e_v = Pml4e::construct(true, true, false, r.pdpt[0].descriptor.phys, false);
@@ -319,24 +319,24 @@ impl HostIDT
 	pub fn build(selector: u16) -> HostIDT
 	{
 		let mut r = HostIDT { idt: [GateDescriptor::default(); 256] };
-		r.set_idt_entry(DIVIDE_ERROR_FAULT, selector, noir_divide_error_fault_handler_a, 0);
-		r.set_idt_entry(DEBUG_FAULT_OR_TRAP, selector, noir_debug_fault_trap_handler_a, 0);
-		r.set_idt_entry(BREAKPOINT_TRAP, selector, noir_breakpoint_trap_handler_a, 0);
-		r.set_idt_entry(OVERFLOW_TRAP, selector, noir_overflow_trap_handler_a, 0);
-		r.set_idt_entry(EXCEED_BOUND_RANGE_FAULT, selector, noir_bound_range_fault_handler_a, 0);
-		r.set_idt_entry(INVALID_OPCODE_FAULT, selector, noir_invalid_opcode_fault_handler_a, 1);
-		r.set_idt_entry(NO_MATH_COPROCESSOR_FAULT, selector, noir_device_not_available_fault_handler_a, 0);
-		r.set_idt_entry(DOUBLE_FAULT_ABORT, selector, noir_double_fault_abort_handler_a, 1);
-		r.set_idt_entry(INVALID_TSS_FAULT, selector, noir_invalid_tss_fault_handler_a, 0);
-		r.set_idt_entry(SEGMENT_ABSENT_FAULT, selector, noir_segment_not_present_fault_handler_a, 0);
-		r.set_idt_entry(STACK_FAULT, selector, noir_stack_fault_handler_a, 1);
-		r.set_idt_entry(GENERAL_PROTECTION_FAULT, selector, noir_general_protection_fault_handler_a, 1);
-		r.set_idt_entry(PAGE_FAULT, selector, noir_page_fault_handler_a, 1);
-		r.set_idt_entry(X87_FP_EXCEPTION_FAULT, selector, noir_x87_floating_point_fault_handler_a, 0);
-		r.set_idt_entry(ALIGNMENT_CHECK_FAULT, selector, noir_alignment_check_fault_handler_a, 0);
-		r.set_idt_entry(MACHINE_CHECK_ABORT, selector, noir_machine_check_abort_handler_a, 0);
-		r.set_idt_entry(SIMD_FP_EXCEPTION_FAULT, selector, noir_simd_floating_point_fault_handler_a, 0);
-		r.set_idt_entry(CONTROL_PROTECTION_FAULT, selector, noir_control_protection_fault_handler_a, 0);
+		r.set_idt_entry(DIVIDE_ERROR_FAULT, selector, negone_divide_error_fault_handler_a, 0);
+		r.set_idt_entry(DEBUG_FAULT_OR_TRAP, selector, negone_debug_fault_trap_handler_a, 0);
+		r.set_idt_entry(BREAKPOINT_TRAP, selector, negone_breakpoint_trap_handler_a, 0);
+		r.set_idt_entry(OVERFLOW_TRAP, selector, negone_overflow_trap_handler_a, 0);
+		r.set_idt_entry(EXCEED_BOUND_RANGE_FAULT, selector, negone_bound_range_fault_handler_a, 0);
+		r.set_idt_entry(INVALID_OPCODE_FAULT, selector, negone_invalid_opcode_fault_handler_a, 1);
+		r.set_idt_entry(NO_MATH_COPROCESSOR_FAULT, selector, negone_device_not_available_fault_handler_a, 0);
+		r.set_idt_entry(DOUBLE_FAULT_ABORT, selector, negone_double_fault_abort_handler_a, 1);
+		r.set_idt_entry(INVALID_TSS_FAULT, selector, negone_invalid_tss_fault_handler_a, 0);
+		r.set_idt_entry(SEGMENT_ABSENT_FAULT, selector, negone_segment_not_present_fault_handler_a, 0);
+		r.set_idt_entry(STACK_FAULT, selector, negone_stack_fault_handler_a, 1);
+		r.set_idt_entry(GENERAL_PROTECTION_FAULT, selector, negone_general_protection_fault_handler_a, 1);
+		r.set_idt_entry(PAGE_FAULT, selector, negone_page_fault_handler_a, 1);
+		r.set_idt_entry(X87_FP_EXCEPTION_FAULT, selector, negone_x87_floating_point_fault_handler_a, 0);
+		r.set_idt_entry(ALIGNMENT_CHECK_FAULT, selector, negone_alignment_check_fault_handler_a, 0);
+		r.set_idt_entry(MACHINE_CHECK_ABORT, selector, negone_machine_check_abort_handler_a, 0);
+		r.set_idt_entry(SIMD_FP_EXCEPTION_FAULT, selector, negone_simd_floating_point_fault_handler_a, 0);
+		r.set_idt_entry(CONTROL_PROTECTION_FAULT, selector, negone_control_protection_fault_handler_a, 0);
 		r
 	}
 
@@ -459,7 +459,7 @@ fn handle_exception_with_error_code(
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_divide_error_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_divide_error_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, DIVIDE_ERROR_FAULT, "Divide-Error Fault");
 }
@@ -469,7 +469,7 @@ unsafe extern "C" fn noir_divide_error_fault_handler(exception_frame: *mut Inter
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_debug_fault_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_debug_fault_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, DEBUG_FAULT_OR_TRAP, "Debug Fault/Trap");
 }
@@ -479,7 +479,7 @@ unsafe extern "C" fn noir_debug_fault_trap_handler(exception_frame: *mut Interru
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_breakpoint_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_breakpoint_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	unsafe {
 		error!("Dumping Exception Frame:\n{}", *exception_frame);
@@ -493,7 +493,7 @@ unsafe extern "C" fn noir_breakpoint_trap_handler(exception_frame: *mut Interrup
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_overflow_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_overflow_trap_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	unsafe {
 		error!("Dumping Exception Frame:\n{}", *exception_frame);
@@ -507,7 +507,7 @@ unsafe extern "C" fn noir_overflow_trap_handler(exception_frame: *mut InterruptS
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_bound_range_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_bound_range_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, EXCEED_BOUND_RANGE_FAULT, "Bound-Range Fault");
 }
@@ -517,7 +517,7 @@ unsafe extern "C" fn noir_bound_range_fault_handler(exception_frame: *mut Interr
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_invalid_opcode_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_invalid_opcode_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, INVALID_OPCODE_FAULT, "Invalid-Opcode Fault");
 }
@@ -527,7 +527,7 @@ unsafe extern "C" fn noir_invalid_opcode_fault_handler(exception_frame: *mut Int
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_device_not_available_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_device_not_available_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, NO_MATH_COPROCESSOR_FAULT, "Device-Not-Available Fault");
 }
@@ -537,7 +537,10 @@ unsafe extern "C" fn noir_device_not_available_fault_handler(exception_frame: *m
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_double_fault_abort_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_double_fault_abort_handler(
+	exception_frame: *mut InterruptStackFrameWithErrorCode,
+	gpr_state: *mut GprState,
+)
 {
 	unsafe {
 		error!("Dumping Exception Frame:\n{}", *exception_frame);
@@ -551,7 +554,7 @@ unsafe extern "C" fn noir_double_fault_abort_handler(exception_frame: *mut Inter
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_invalid_tss_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_invalid_tss_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
 {
 	handle_exception_with_error_code(exception_frame, gpr_state, INVALID_TSS_FAULT, "Invalid-TSS Fault");
 }
@@ -561,7 +564,7 @@ unsafe extern "C" fn noir_invalid_tss_fault_handler(exception_frame: *mut Interr
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_segment_not_present_fault_handler(
+unsafe extern "C" fn negone_segment_not_present_fault_handler(
 	exception_frame: *mut InterruptStackFrameWithErrorCode,
 	gpr_state: *mut GprState,
 )
@@ -574,7 +577,7 @@ unsafe extern "C" fn noir_segment_not_present_fault_handler(
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_stack_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_stack_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
 {
 	handle_exception_with_error_code(exception_frame, gpr_state, STACK_FAULT, "Stack Fault");
 }
@@ -584,7 +587,7 @@ unsafe extern "C" fn noir_stack_fault_handler(exception_frame: *mut InterruptSta
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_general_protection_fault_handler(
+unsafe extern "C" fn negone_general_protection_fault_handler(
 	exception_frame: *mut InterruptStackFrameWithErrorCode,
 	gpr_state: *mut GprState,
 )
@@ -597,7 +600,7 @@ unsafe extern "C" fn noir_general_protection_fault_handler(
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_page_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_page_fault_handler(exception_frame: *mut InterruptStackFrameWithErrorCode, gpr_state: *mut GprState)
 {
 	let cr2 = read_cr2();
 	// Check if the #PF is caught in the stack guard page.
@@ -618,7 +621,7 @@ unsafe extern "C" fn noir_page_fault_handler(exception_frame: *mut InterruptStac
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_x87_floating_point_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_x87_floating_point_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(
 		exception_frame,
@@ -633,7 +636,7 @@ unsafe extern "C" fn noir_x87_floating_point_fault_handler(exception_frame: *mut
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_alignment_check_fault_handler(
+unsafe extern "C" fn negone_alignment_check_fault_handler(
 	exception_frame: *mut InterruptStackFrameWithErrorCode,
 	gpr_state: *mut GprState,
 )
@@ -646,7 +649,7 @@ unsafe extern "C" fn noir_alignment_check_fault_handler(
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_machine_check_abort_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_machine_check_abort_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	unsafe {
 		error!("Dumping Exception Frame:\n{}", *exception_frame);
@@ -660,7 +663,7 @@ unsafe extern "C" fn noir_machine_check_abort_handler(exception_frame: *mut Inte
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_simd_floating_point_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
+unsafe extern "C" fn negone_simd_floating_point_fault_handler(exception_frame: *mut InterruptStackFrame, gpr_state: *mut GprState)
 {
 	handle_exception_without_error_code(exception_frame, gpr_state, SIMD_FP_EXCEPTION_FAULT, "SIMD Floating-Point Fault");
 }
@@ -670,7 +673,7 @@ unsafe extern "C" fn noir_simd_floating_point_fault_handler(exception_frame: *mu
 /// # Safety
 /// This function is called by assembly. *DO NOT CALL THIS FUNCTION FROM RUST!*
 #[unsafe(no_mangle)]
-unsafe extern "C" fn noir_control_protection_fault_handler(
+unsafe extern "C" fn negone_control_protection_fault_handler(
 	exception_frame: *mut InterruptStackFrameWithErrorCode,
 	gpr_state: *mut GprState,
 )
@@ -679,24 +682,24 @@ unsafe extern "C" fn noir_control_protection_fault_handler(
 }
 
 unsafe extern "C" {
-	fn noir_divide_error_fault_handler_a() -> !;
-	fn noir_debug_fault_trap_handler_a() -> !;
-	fn noir_breakpoint_trap_handler_a() -> !;
-	fn noir_overflow_trap_handler_a() -> !;
-	fn noir_bound_range_fault_handler_a() -> !;
-	fn noir_invalid_opcode_fault_handler_a() -> !;
-	fn noir_device_not_available_fault_handler_a() -> !;
-	fn noir_double_fault_abort_handler_a() -> !;
-	fn noir_invalid_tss_fault_handler_a() -> !;
-	fn noir_segment_not_present_fault_handler_a() -> !;
-	fn noir_stack_fault_handler_a() -> !;
-	fn noir_general_protection_fault_handler_a() -> !;
-	fn noir_page_fault_handler_a() -> !;
-	fn noir_x87_floating_point_fault_handler_a() -> !;
-	fn noir_alignment_check_fault_handler_a() -> !;
-	fn noir_machine_check_abort_handler_a() -> !;
-	fn noir_simd_floating_point_fault_handler_a() -> !;
-	fn noir_control_protection_fault_handler_a() -> !;
+	fn negone_divide_error_fault_handler_a() -> !;
+	fn negone_debug_fault_trap_handler_a() -> !;
+	fn negone_breakpoint_trap_handler_a() -> !;
+	fn negone_overflow_trap_handler_a() -> !;
+	fn negone_bound_range_fault_handler_a() -> !;
+	fn negone_invalid_opcode_fault_handler_a() -> !;
+	fn negone_device_not_available_fault_handler_a() -> !;
+	fn negone_double_fault_abort_handler_a() -> !;
+	fn negone_invalid_tss_fault_handler_a() -> !;
+	fn negone_segment_not_present_fault_handler_a() -> !;
+	fn negone_stack_fault_handler_a() -> !;
+	fn negone_general_protection_fault_handler_a() -> !;
+	fn negone_page_fault_handler_a() -> !;
+	fn negone_x87_floating_point_fault_handler_a() -> !;
+	fn negone_alignment_check_fault_handler_a() -> !;
+	fn negone_machine_check_abort_handler_a() -> !;
+	fn negone_simd_floating_point_fault_handler_a() -> !;
+	fn negone_control_protection_fault_handler_a() -> !;
 }
 
 global_asm!(include_str!("x86_interrupt.s"));

@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file implements the NoirVisor CVM virtual machine scheduler.
+ * This file implements the NegOne CVM virtual machine scheduler.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -412,7 +412,7 @@ impl VirtualMachine
 pub static VM_LIST: RwLock<HandleTable<Arc<RwLock<VirtualMachine>>>> = RwLock::new(HandleTable::new());
 
 #[unsafe(no_mangle)]
-extern "system" fn noir_notify_process_termination(process_id: u32)
+extern "system" fn negone_notify_process_termination(process_id: u32)
 {
 	// Enumerate VM List and delete all VMs created by the process.
 	let mut lk = VM_LIST.write();

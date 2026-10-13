@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the entry point for the NoirVisor Windows driver support library.
+ * This file is the entry point for the NegOne Windows driver support library.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -47,19 +47,19 @@ mod misc;
 pub mod sync;
 
 unsafe extern "system" {
-	fn noir_dispatch_ioctl(
+	fn negone_dispatch_ioctl(
 		ioctl_code: usize,
 		in_buff: *const c_void,
 		in_size: usize,
 		out_buff: *mut c_void,
 		out_size: usize,
 	) -> Status;
-	fn noir_cvsched_init() -> bool;
-	fn noir_cvsched_deinit();
+	fn negone_cvsched_init() -> bool;
+	fn negone_cvsched_deinit();
 }
 
-static DEVICE_NAME: &[u16] = &utf16!("\\Device\\NoirVisor");
-static LINK_NAME: &[u16] = &utf16!("\\DosDevices\\NoirVisor");
+static DEVICE_NAME: &[u16] = &utf16!("\\Device\\NegOne");
+static LINK_NAME: &[u16] = &utf16!("\\DosDevices\\NegOne");
 
 // The definition from windows_sys crate is incorrect.
 #[derive(Clone, Copy)]
@@ -196,7 +196,7 @@ unsafe fn get_output_buffer(irp: *const IRP) -> *mut c_void
 unsafe extern "system" fn driver_unload(driver_object: *const DRIVER_OBJECT)
 {
 	unsafe {
-		noir_cvsched_deinit();
+		negone_cvsched_deinit();
 		PsSetCreateProcessNotifyRoutine(Some(create_process_notify_fn), true);
 		let link_name = unistr_from_slice(LINK_NAME);
 		IoDeleteSymbolicLink(&raw const link_name);
@@ -228,8 +228,8 @@ unsafe extern "system" fn dispatch_io_control(_device_object: *const DEVICE_OBJE
 		if is_ctl_code_custom(io_ctrl_code)
 		{
 			let code_index = function_from_ctl_code(io_ctrl_code);
-			let cv_st = noir_dispatch_ioctl(code_index, in_buff, in_size, out_buff, out_size);
-			// Convert NoirVisor's status code into NT's status code.
+			let cv_st = negone_dispatch_ioctl(code_index, in_buff, in_size, out_buff, out_size);
+			// Convert NegOne's status code into NT's status code.
 			st = match cv_st
 			{
 				Status::SUCCESS => STATUS_SUCCESS,
@@ -245,19 +245,19 @@ unsafe extern "system" fn dispatch_io_control(_device_object: *const DEVICE_OBJE
 }
 
 #[unsafe(no_mangle)]
-unsafe extern "system" fn NoirDriverEntry(driver_object: *mut DRIVER_OBJECT, _registry_path: *const UNICODE_STRING) -> NTSTATUS
+unsafe extern "system" fn NegOneDriverEntry(driver_object: *mut DRIVER_OBJECT, _registry_path: *const UNICODE_STRING) -> NTSTATUS
 {
 	let mut st: NTSTATUS = STATUS_DEVICE_CONFIGURATION_ERROR;
 	init_logger();
 	unsafe {
-		if !noir_cvsched_init()
+		if !negone_cvsched_init()
 		{
 			return st;
 		}
 		st = PsSetCreateProcessNotifyRoutine(Some(create_process_notify_fn), false);
 		if st != STATUS_SUCCESS
 		{
-			noir_cvsched_deinit();
+			negone_cvsched_deinit();
 			return st;
 		}
 		(*driver_object).MajorFunction[IRP_MJ_CREATE as usize] = Some(dispatch_create_close);
@@ -281,7 +281,7 @@ unsafe extern "system" fn NoirDriverEntry(driver_object: *mut DRIVER_OBJECT, _re
 			st = IoCreateSymbolicLink(&raw const link_name, &raw const dev_name);
 			if st != STATUS_SUCCESS
 			{
-				noir_cvsched_deinit();
+				negone_cvsched_deinit();
 				PsSetCreateProcessNotifyRoutine(Some(create_process_notify_fn), true);
 				IoDeleteDevice(dev_obj);
 			}
@@ -289,7 +289,7 @@ unsafe extern "system" fn NoirDriverEntry(driver_object: *mut DRIVER_OBJECT, _re
 		else
 		{
 			PsSetCreateProcessNotifyRoutine(Some(create_process_notify_fn), true);
-			noir_cvsched_deinit();
+			negone_cvsched_deinit();
 		}
 	}
 	st
@@ -306,7 +306,7 @@ mod panicking
 	#[panic_handler]
 	fn panic(info: &PanicInfo) -> !
 	{
-		error!("NoirVisor {info}");
+		error!("NegOne {info}");
 		unsafe {
 			// As we're panicking, send the system to crash.
 			KeBugCheckEx(MANUALLY_INITIATED_CRASH, 0, 0, 0, 0);

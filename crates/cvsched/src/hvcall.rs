@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines the NoirVisor CVM hypercall interfaces.
+ * This file defines the NegOne CVM hypercall interfaces.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -57,7 +57,7 @@ pub(crate) fn init()
 /// Perform a hypercall on the current system.
 ///
 /// ## Safety
-/// If NoirVisor is not loaded, the behavior is undefined.
+/// If NegOne is not loaded, the behavior is undefined.
 #[inline(always)]
 pub(crate) unsafe fn hypercall<T: Sized>(fn_index: u32, context: *mut T, ctxt_len: usize) -> Result<(), Status>
 {

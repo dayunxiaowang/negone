@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file wraps UEFI functionalities for NoirVisor in Rust.
+ * This file wraps UEFI functionalities for NegOne in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -26,7 +26,7 @@ use static_collections::vec::StaticVec;
 
 unsafe extern "C" {
 	fn __isa_available_init();
-	fn noir_debug_output(buffer: *const u8, length: usize);
+	fn negone_debug_output(buffer: *const u8, length: usize);
 }
 
 struct DebugOutputFormatter;
@@ -36,7 +36,7 @@ impl fmt::Write for DebugOutputFormatter
 	fn write_str(&mut self, s: &str) -> fmt::Result
 	{
 		unsafe {
-			noir_debug_output(s.as_ptr(), s.len());
+			negone_debug_output(s.as_ptr(), s.len());
 		}
 		Ok(())
 	}
@@ -98,7 +98,7 @@ pub fn block_until_keystroke(ch: char)
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_system_debugger_write(string: *const u8, length: usize)
+extern "C" fn negone_system_debugger_write(string: *const u8, length: usize)
 {
 	let mut w: StaticVec<512, u16> = StaticVec::new();
 	let s = unsafe { str::from_utf8_unchecked(slice::from_raw_parts(string, length)) };
@@ -136,7 +136,7 @@ const PAGE_2MB_MASK_LO: u64 = PAGE_2MB_SIZE - 1;
 const PAGE_2MB_MASK_HI: u64 = !PAGE_2MB_MASK_LO;
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_alloc_2mb_page() -> *mut c_void
+extern "C" fn negone_alloc_2mb_page() -> *mut c_void
 {
 	match unsafe { allocate_pages(RUNTIME_SERVICES_DATA, 1024) }
 	{
@@ -173,7 +173,7 @@ extern "C" fn noir_alloc_2mb_page() -> *mut c_void
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_free_2mb_page(virtual_address: *mut c_void)
+extern "C" fn negone_free_2mb_page(virtual_address: *mut c_void)
 {
 	unsafe {
 		free_pages(virtual_address as u64, PAGE_2MB_SIZE as usize);
@@ -181,31 +181,31 @@ extern "C" fn noir_free_2mb_page(virtual_address: *mut c_void)
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_get_physical_address(virtual_address: *mut c_void) -> u64
+extern "C" fn negone_get_physical_address(virtual_address: *mut c_void) -> u64
 {
 	virtual_address as u64
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_find_virt_by_phys(physical_address: u64) -> *mut c_void
+extern "C" fn negone_find_virt_by_phys(physical_address: u64) -> *mut c_void
 {
 	physical_address as *mut c_void
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_map_physical_memory(physical_address: u64, _length: usize) -> *mut c_void
+extern "C" fn negone_map_physical_memory(physical_address: u64, _length: usize) -> *mut c_void
 {
 	physical_address as *mut c_void
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_map_uncached_memory(physical_address: u64, _length: usize) -> *mut c_void
+extern "C" fn negone_map_uncached_memory(physical_address: u64, _length: usize) -> *mut c_void
 {
 	physical_address as *mut c_void
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_unmap_physical_memory(_physical_address: u64, _length: usize)
+extern "C" fn negone_unmap_physical_memory(_physical_address: u64, _length: usize)
 {
 	// Nothing to do to unmap stuff in UEFI.
 }
@@ -217,7 +217,7 @@ struct GenericWorkerInfo
 	context: *mut c_void,
 }
 
-extern "efiapi" fn noir_generic_call_rt(argument: *mut c_void)
+extern "efiapi" fn negone_generic_call_rt(argument: *mut c_void)
 {
 	let context: &GenericWorkerInfo = unsafe { &*argument.cast() };
 	let mp_ptr = MP_PROTOCOL.load(Ordering::Relaxed);
@@ -238,11 +238,11 @@ extern "efiapi" fn noir_generic_call_rt(argument: *mut c_void)
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_generic_call(worker: extern "C" fn(*mut c_void, u32), context: *mut c_void)
+extern "C" fn negone_generic_call(worker: extern "C" fn(*mut c_void, u32), context: *mut c_void)
 {
 	let mut worker_context = GenericWorkerInfo { worker, context };
 	// Do it in BSP before other APs.
-	noir_generic_call_rt((&raw mut worker_context).cast());
+	negone_generic_call_rt((&raw mut worker_context).cast());
 	let mp_ptr = MP_PROTOCOL.load(Ordering::Relaxed);
 	if !mp_ptr.is_null()
 	{
@@ -250,7 +250,7 @@ extern "C" fn noir_generic_call(worker: extern "C" fn(*mut c_void, u32), context
 		unsafe {
 			(mp.startup_all_aps)(
 				mp_ptr,
-				noir_generic_call_rt,
+				negone_generic_call_rt,
 				Boolean::TRUE,
 				null_mut(),
 				0,
@@ -262,7 +262,7 @@ extern "C" fn noir_generic_call(worker: extern "C" fn(*mut c_void, u32), context
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_get_processor_count() -> u32
+extern "C" fn negone_get_processor_count() -> u32
 {
 	let mp_ptr = MP_PROTOCOL.load(Ordering::Relaxed);
 	if mp_ptr.is_null()
@@ -334,7 +334,7 @@ impl From<&MemoryDescriptor> for MemoryRange
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_enum_physical_memory_ranges(callback: extern "C" fn(u64, u64, *mut c_void), context: *mut c_void)
+extern "C" fn negone_enum_physical_memory_ranges(callback: extern "C" fn(u64, u64, *mut c_void), context: *mut c_void)
 {
 	let mut descriptors: MaybeUninit<[MemoryDescriptor; 256]> = MaybeUninit::uninit();
 	let mut map_size = size_of::<MemoryDescriptor>() * 256;

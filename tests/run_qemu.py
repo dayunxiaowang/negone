@@ -124,7 +124,7 @@ if __name__=="__main__":
 			"-m",ram,
 			"-drive","if=pflash,format=raw,unit=0,readonly=on,file=ovmf-code.fd",
 			"-drive","if=pflash,format=raw,unit=1,readonly=on,file=ovmf-vars.fd",
-			"-drive","format=raw,file="+os.path.join("..","bin","comp{}_uefix64".format(build_preset),"NoirVisor-Uefi.img"),
+			"-drive","format=raw,file="+os.path.join("..","bin","comp{}_uefix64".format(build_preset),"NegOne-Uefi.img"),
 			"-chardev","{},id=debugger".format(debugcon_chardev),
 			"-device","isa-debugcon,iobase=0x{:X},chardev=debugger".format(debugcon)]
 		if not debug_log is None:

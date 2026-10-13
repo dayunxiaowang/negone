@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file handles VM-Exits in Intel VT-x of NoirVisor Core in Rust.
+ * This file handles VM-Exits in Intel VT-x of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -320,7 +320,7 @@ impl VtVcpu
 				{
 					0 =>
 					{
-						// Currently, NoirVisor only intercepts changes to CR0.PG.
+						// Currently, NegOne only intercepts changes to CR0.PG.
 						// As a result, TLBs must be flushed.
 						let ivc = InvvpidContext::Single(1);
 						unsafe {

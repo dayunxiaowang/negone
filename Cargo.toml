@@ -1,7 +1,9 @@
 [package]
-name = "nvcore"
+name = "negone-core"
 version = "0.1.0"
 edition = "2024"
+description = "NegOne Type-1 hypervisor core for x86-64"
+repository = "https://github.com/dayunxiaowang/negone"
 
 [lib]
 crate-type = ["staticlib"]

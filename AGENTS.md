@@ -5,12 +5,13 @@ Do not modify this structure without updating the project guidelines.
 
 ## Project & Tech Stack Context
 
-- **Project Name:** NoirVisor (A Bluepill-like Type-1 Hypervisor that boots before OS)
+- **Project Name:** NegOne (A Bluepill-like Type-1 Hypervisor that boots before OS)
+- **Fork:** `dayunxiaowang/negone`, based on NoirVisor `rust-dev`. Read [the fork guidelines](./doc/fork.md) for naming, attribution, and compatibility boundaries.
 - **Primary Stack:**
-	* Rust 2024 (Most of the codes in NoirVisor)
+	* Rust 2024 (Most of the codes in NegOne)
 	* Assembly (Special instructions and context switches)
-	* Python (Scripts that used for building and testing NoirVisor)
-	* JSON (Configurations used by Python scripts for building and running NoirVisor)
+	* Python (Scripts that used for building and testing NegOne)
+	* JSON (Configurations used by Python scripts for building and running NegOne)
 
 ## Coding Standards
 - In general, codes must pass tests from `python make.py check` command. No warnings and errors are allowed.

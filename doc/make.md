@@ -5,7 +5,7 @@ The python script is intended for parallelizing the build progress. It utilizes 
 The minimal version of python required for building is 3.9 since the script is using typing syntax to help reading the codes. \
 Download [Python](https://www.python.org/downloads/windows/) from Python's official website.
 
-The minimal version of Rust compiler is 1.85.0 since NoirVisor uses Rust 2024 edition. \
+The minimal version of Rust compiler is 1.85.0 since NegOne uses Rust 2024 edition. \
 Download [Rust](https://www.rust-lang.org/tools/install) from Rust-lang's official website. Note that you must install the `nightly` toolchain.
 
 There is no known minimal version requirement for Netwide Assembler (NASM). Just install the newest version you can find. \
@@ -14,12 +14,12 @@ Installer of NASM for Windows does not add itself to `PATH` environment variable
 
 There is no known minimal version requirement for LLVM. Just install the newest version you can find. \
 Download [LLVM](https://github.com/llvm/llvm-project/releases) from LLVM's GitHub repository release page. \
-LLVM is required for building NoirVisor. \
+LLVM is required for building NegOne. \
 Installer of LLVM for Windows is somewhat buggy on adding itself to `PATH` environment variable. Check the `PATH` after installation. Add it if it's missing.
 
 There is no known minimal version requirement for QEMU. Just install the newest version you can find. \
 Download [QEMU](https://qemu.weilnetz.de/w64/) from Stefan Weil's website. \
-QEMU is only required for building NoirVisor for UEFI in order to convert raw images into VHDX (Microsoft Hyper-V) and VMDK (VMware Workstation). \
+QEMU is only required for building NegOne for UEFI in order to convert raw images into VHDX (Microsoft Hyper-V) and VMDK (VMware Workstation). \
 Installer of QEMU for Windows does not add itself to `PATH` environment variable. You must add it to `PATH` on your own.
 
 There is no known minimal version requirement for osslsigncode. Just install the newest version you can find. \
@@ -33,21 +33,21 @@ OpenSSL is only required for signing the executable file with the test signature
 [FireDaemon](https://www.firedaemon.com/download-firedaemon-openssl) provides pre-built OpenSSL binaries. After installing FireDaemon OpenSSL, you may copy the `legacy.dll` file and place it properly. \
 It seems like OpenSSL can be installed with `vcpkg` - supposedly the cleanest way - but I'm not sure how to use `vcpkg`.
 
-The GNU `mtools` are required to make raw images for NoirVisor. I have uploaded the [pre-built `mtools` binaries for Windows to GitHub](https://github.com/Zero-Tang/NoirVisor/files/12706542/mtools-4.0.43-bin.zip). \
+The GNU `mtools` are required to make raw images for NegOne. I have uploaded the [pre-built `mtools` binaries for Windows to GitHub](https://github.com/dayunxiaowang/negone/files/12706542/mtools-4.0.43-bin.zip). \
 Extract the files to a certain directory, and add that directory to `PATH` environment variable.
 
-### NoirVisor Core
-NoirVisor Core is written in Rust. See [documentation for NoirVisor in Rust](./rust.md).
+### NegOne Core
+NegOne Core is written in Rust. See [documentation for NegOne in Rust](./rust.md).
 
 Install [Rust](https://www.rust-lang.org/tools/install). \
-Due to the usage of [unstable feature "`allocator_ext`"](https://github.com/rust-lang/rust/issues/163177), you must use nightly toolchain in order to build NoirVisor. \
-NoirVisor doesn't require a specific version of rustc. You should be fine using the up-to-date nightly compiler.
+Due to the usage of [unstable feature "`allocator_ext`"](https://github.com/rust-lang/rust/issues/163177), you must use nightly toolchain in order to build NegOne. \
+NegOne doesn't require a specific version of rustc. You should be fine using the up-to-date nightly compiler.
 
-Currently, NoirVisor Core in Rust can subvert the system with Intel VT-x and AMD-V in UEFI and Windows. \
-However, NoirVisor can only boot Windows from UEFI in single-core scenario.
+NegOne Core initializes Intel VT-x or AMD-V from UEFI before the operating system starts. \
+The inherited implementation is documented to boot Windows from UEFI only in a single-core scenario. The Windows driver provides CVM management and does not initialize the Type-1 core by itself.
 
 ### Windows Driver
-As the result of the Rust remastering, NoirVisor as the Windows Driver no longer subverts the current operating system. \
+As the result of the Rust remastering, NegOne as the Windows Driver no longer subverts the current operating system. \
 Presets for Free/Release build are available. Please note that the compiled binary under Free build does not come along with a digital signature. You might have to sign it yourself.
 
 You must install `x86_64-pc-windows-msvc` target host for Rust. This should be installed by default, but if you didn't, you may install it by:
@@ -59,7 +59,7 @@ You must execute the python script inside a Visual Studio prompt environment. Th
 
 ### EFI Application and Runtime Driver
 Due to different EFI firmware implementation, most modern computer firmware does not support booting an EFI Runtime Driver directly. Therefore, it is necessary to build a separate EFI Application. In this way, modern computer firmware will boot, and the application can load runtime driver into memory. \
-After NoirVisor 7th Anniversary, the [EDK-II-Library](https://github.com/Zero-Tang/EDK-II-Library) is obsolete. NoirVisor for UEFI will be fully written in Rust. You do not have to setup `edk2` anymore in order build NoirVisor for UEFI.
+After NegOne 7th Anniversary, the [EDK-II-Library](https://github.com/Zero-Tang/EDK-II-Library) is obsolete. NegOne for UEFI will be fully written in Rust. You do not have to setup `edk2` anymore in order build NegOne for UEFI.
 
 You must install `x86_64-unknown-uefi` target host for Rust. This is not installed by default, so you may install it by:
 ```
@@ -69,7 +69,7 @@ rustup target add x86_64-unknown-uefi
 You do not have to execute the python script inside a Visual Studio prompt environment.
 
 #### Build Windows Driver on Linux
-It is possible to build NoirVisor for Windows on Linux. \
+It is possible to build NegOne for Windows on Linux. \
 In addition to Rust compiler, you should install the dependencies so that `lld-link`, `llvm-rc`, `llvm-lib`, and `osslsigncode` are available.
 
 For Ubuntu 26.04 LTS:
@@ -82,7 +82,7 @@ sudo dnf install clang lld llvm osslsigncode
 ```
 
 #### Build EFI Application and Runtime Driver on Linux
-It is possible to build NoirVisor for UEFI on Linux. \
+It is possible to build NegOne for UEFI on Linux. \
 In addition to Rust compiler, you should install the dependencies so that `clang-cl`, `lld-link`, `llvm-ar`, `mcopy`, `mmd`, `mformat`, `qemu-img`, and `nasm` are available.
 
 For Ubuntu 26.04 LTS:
@@ -112,7 +112,7 @@ python3 make.py [build|check|clean|test] [/target windows|uefi] [/opt:yes|no]
 `[build|check|clean|test]` specifies the action performed by the script. Default is `build`. \
 If the action is not `build`, all further arguments are ignored.
 
-`build` action will build NoirVisor into executables. You don't need to specify this action as this is the default.
+`build` action will build NegOne into executables. You don't need to specify this action as this is the default.
 
 `check` action instructs the script to invoke `cargo clippy` to check the idiomaticity, and to invoke `cargo audit` to check if there're vulnerable, unmaintained or yanked crates. \
 You must ensure `cargo audit` is installed! If not, install `cargo-audit`:

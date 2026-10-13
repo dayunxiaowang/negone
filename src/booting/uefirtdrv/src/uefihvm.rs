@@ -1,5 +1,5 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
@@ -34,10 +34,10 @@ use crate::{
 };
 
 unsafe extern "C" {
-	fn noir_configure_qemu_debug_console(port: u16) -> u32;
-	fn noir_configure_serial_port_debugger(port_number: u8, port_base: u16, baud_rate: u32) -> u32;
-	fn noir_add_section_to_ci(base: *mut c_void, size: u32, delay: bool) -> bool;
-	fn noir_activate_ci() -> bool;
+	fn negone_configure_qemu_debug_console(port: u16) -> u32;
+	fn negone_configure_serial_port_debugger(port_number: u8, port_base: u16, baud_rate: u32) -> u32;
+	fn negone_add_section_to_ci(base: *mut c_void, size: u32, delay: bool) -> bool;
+	fn negone_activate_ci() -> bool;
 	fn nvc_logger_initialize(level: u32) -> bool;
 	fn nvc_build_hypervisor() -> u32;
 	fn NoirInitializeDisassembler();
@@ -68,9 +68,9 @@ pub fn init_internal_debugger()
 					"qemu_debugcon" =>
 					{
 						let port = configs.query("QemuDebugConPortNumber").map(|record| record.unwrap_integer(0x402)).unwrap_or(0x402);
-						println!("NoirVisor will use QEMU ISA Debug Console at Port 0x{port:04X}!");
+						println!("NegOne will use QEMU ISA Debug Console at Port 0x{port:04X}!");
 						unsafe {
-							noir_configure_qemu_debug_console(port as u16);
+							negone_configure_qemu_debug_console(port as u16);
 						}
 						println!("Make sure you see a message on your debug console!");
 					}
@@ -80,10 +80,10 @@ pub fn init_internal_debugger()
 						let port_number = configs.query("SerialPortNumber").map(|record| record.unwrap_integer(2)).unwrap_or(2);
 						let port_base = configs.query("SerialPortBase").map(|record| record.unwrap_integer(0x2F8)).unwrap_or(0x2F8);
 						println!(
-							"NoirVisor will use Serial connection (COM{port_number}) at Port 0x{port_base:04X} with baud-rate {baud_rate} Hz!"
+							"NegOne will use Serial connection (COM{port_number}) at Port 0x{port_base:04X} with baud-rate {baud_rate} Hz!"
 						);
 						unsafe {
-							noir_configure_serial_port_debugger(port_number as u8, port_base as u16, baud_rate);
+							negone_configure_serial_port_debugger(port_number as u8, port_base as u16, baud_rate);
 						}
 						println!("Make sure you see a message on your debug console!");
 					}
@@ -118,7 +118,7 @@ const FEATURE_NESTED_VIRTUALIZATION: u64 = 0x10;
 const FEATURE_ENABLE_IOMMU: u64 = 0x200;
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_query_enabled_features_in_system() -> u64
+extern "C" fn negone_query_enabled_features_in_system() -> u64
 {
 	let configs = ConfigurationList::ref_global();
 	let mut features: u64 = 0;
@@ -162,7 +162,7 @@ struct Acpi10RootSystemDescriptionPointer
 }
 
 #[unsafe(no_mangle)]
-extern "C" fn noir_locate_acpi_rsdt(_length: *mut usize) -> *mut c_void
+extern "C" fn negone_locate_acpi_rsdt(_length: *mut usize) -> *mut c_void
 {
 	let st = unsafe { &*ST_TABLE.load(Ordering::Relaxed) };
 	let mut xsdt: *mut c_void = null_mut();
@@ -221,7 +221,7 @@ pub fn init_ci() -> bool
 				if matches!(section_name, ".text" | ".eh_fram" | ".rdata" | ".pdata" | ".dma_atk")
 				{
 					println!("Adding section {section_name} (Base: {base:p}, Size: 0x{size:X}) to CI...");
-					if !unsafe { noir_add_section_to_ci(base, size, false) }
+					if !unsafe { negone_add_section_to_ci(base, size, false) }
 					{
 						println!("Failed to add section {section_name} to CI!");
 						return false;
@@ -232,7 +232,7 @@ pub fn init_ci() -> bool
 					let base = unsafe { image_base.byte_add(section.VirtualAddress as usize) };
 					let size = section.SizeOfRawData;
 					println!("Delaying section {section_name} (Base: {base:p}, Size: 0x{size:X}) to CI...");
-					if !unsafe { noir_add_section_to_ci(base, size, true) }
+					if !unsafe { negone_add_section_to_ci(base, size, true) }
 					{
 						println!("Failed to add section {section_name} to CI!");
 						return false;
@@ -240,7 +240,7 @@ pub fn init_ci() -> bool
 				}
 			}
 			unsafe {
-				return noir_activate_ci();
+				return negone_activate_ci();
 			}
 		}
 	}
@@ -335,11 +335,11 @@ pub fn build_hypervisor() -> u32
 }
 
 static mut EXIT_BOOT_SERVICES_EVENT: Event = null_mut();
-const NOIR_HYPERCALL_EXIT_BOOT_SERVICES: u32 = 3;
+const NEGONE_HYPERCALL_EXIT_BOOT_SERVICES: u32 = 3;
 
 // In order to avoid relocation while handling the event, use naked assembly to guarantee location-independency.
 #[unsafe(naked)]
-extern "efiapi" fn noir_exit_boot_services_notification_intel_fn(event: Event, context: *mut c_void)
+extern "efiapi" fn negone_exit_boot_services_notification_intel_fn(event: Event, context: *mut c_void)
 {
 	naked_asm!
 	(
@@ -348,13 +348,13 @@ extern "efiapi" fn noir_exit_boot_services_notification_intel_fn(event: Event, c
 		"xor r8,r8",
 		"vmcall",
 		"ret",
-		hvc_index=const NOIR_HYPERCALL_EXIT_BOOT_SERVICES
+		hvc_index=const NEGONE_HYPERCALL_EXIT_BOOT_SERVICES
 	)
 }
 
 // In order to avoid relocation while handling the event, use naked assembly to guarantee location-independency.
 #[unsafe(naked)]
-extern "efiapi" fn noir_exit_boot_services_notification_amd_fn(event: Event, context: *mut c_void)
+extern "efiapi" fn negone_exit_boot_services_notification_amd_fn(event: Event, context: *mut c_void)
 {
 	naked_asm!
 	(
@@ -363,7 +363,7 @@ extern "efiapi" fn noir_exit_boot_services_notification_amd_fn(event: Event, con
 		"xor r8,r8",
 		"vmmcall",
 		"ret",
-		hvc_index=const NOIR_HYPERCALL_EXIT_BOOT_SERVICES
+		hvc_index=const NEGONE_HYPERCALL_EXIT_BOOT_SERVICES
 	)
 }
 
@@ -382,9 +382,9 @@ pub fn register_exit_boot_services_event()
 	{
 		"GenuineIntel" | "VIA VIA VIA " | "  Shanghai  " | "CentaurHauls" =>
 		{
-			Some(noir_exit_boot_services_notification_intel_fn as EventNotify)
+			Some(negone_exit_boot_services_notification_intel_fn as EventNotify)
 		}
-		"AuthenticAMD" | "HygonGenuine" => Some(noir_exit_boot_services_notification_amd_fn as EventNotify),
+		"AuthenticAMD" | "HygonGenuine" => Some(negone_exit_boot_services_notification_amd_fn as EventNotify),
 		_ => None,
 	};
 	let st = unsafe {

@@ -1,8 +1,8 @@
-// NoirVisor - Hardware-Accelerated Hypervisor solution
+// NegOne - Hardware-Accelerated Hypervisor solution
 //
 // Copyright (c) Zero Tang, 2018-2026. All rights reserved.
 //
-// This file is a header file of NoirVisor assembly part.
+// This file is a header file of NegOne assembly part.
 //
 // This program is distributed in the hope that it will be successful, but
 // without any warranty (no matter implied warranty of merchantability or

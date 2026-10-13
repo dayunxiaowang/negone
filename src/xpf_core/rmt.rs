@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines the reverse-mapping tables of NoirVisor Core in Rust.
+ * This file defines the reverse-mapping tables of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -63,8 +63,8 @@ impl RmtTerminalEntry
 	/// Indicates this page is assigned to the subverted host. \
 	/// Pages assigned to the subverted host can be later reassigned to any ownership.
 	pub const OWNERSHIP_SUBVERTED_HOST: u8 = 0;
-	/// Indicates this page is assigned to the NoirVisor. \
-	/// Pages assigned to the NoirVisor must not be reassigned in any circumstances.
+	/// Indicates this page is assigned to the NegOne. \
+	/// Pages assigned to the NegOne must not be reassigned in any circumstances.
 	pub const OWNERSHIP_NOIRVISOR: u8 = 1;
 	/// Indicates this page is assigned to the CVM Guest. \
 	/// Pages assigned to the CVM Guest can be reassigned to the subverted host once
@@ -194,13 +194,13 @@ impl ReverseMappingTableRoot
 
 	pub fn assign_for_noirvisor(&mut self)
 	{
-		// Assign the ownership of NoirVisor image and allocated pages to NoirVisor.
+		// Assign the ownership of NegOne image and allocated pages to NegOne.
 		for p in CI_MANAGER.read().into_iter()
 		{
 			let phys = page_mult(p.pfn());
 			self.assign_4kb_page(phys, 0, RmtTerminalEntry::OWNERSHIP_NOIRVISOR);
 		}
-		// Assign the ownership of allocated pages to NoirVisor.
+		// Assign the ownership of allocated pages to NegOne.
 		for p in PAGE_ALLOC_MANAGER.lock().iter()
 		{
 			let mut lk = None;

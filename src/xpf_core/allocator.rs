@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines global allocator for NoirVisor Core in Rust.
+ * This file defines global allocator for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -187,14 +187,14 @@ impl PageAllocationInformation
 {
 	fn new() -> Option<Self>
 	{
-		let virt = unsafe { noir_alloc_2mb_page() };
+		let virt = unsafe { negone_alloc_2mb_page() };
 		if virt.is_null()
 		{
 			None
 		}
 		else
 		{
-			Some(Self { descriptor: unsafe { MemoryDescriptor::new(virt, noir_get_physical_address(virt)) }, bitmap: [0; 8] })
+			Some(Self { descriptor: unsafe { MemoryDescriptor::new(virt, negone_get_physical_address(virt)) }, bitmap: [0; 8] })
 		}
 	}
 
@@ -230,7 +230,7 @@ impl PageAllocationInformation
 							let _ = bmp.set(j);
 						}
 						// println!("[alloc] Allocated Page {s:p} to {:p}! Allocation Info: {self}",s.byte_add(pages));
-						return Some((s, noir_get_physical_address(s)));
+						return Some((s, negone_get_physical_address(s)));
 					}
 				}
 			}
@@ -327,7 +327,7 @@ impl PageAllocationManager
 	{
 		if self.list.len() == self.list.capacity()
 		{
-			panic!("NoirVisor has exceeded 128MiB Internal allocation limit!");
+			panic!("NegOne has exceeded 128MiB Internal allocation limit!");
 		}
 		let info = PageAllocationInformation::new().expect("Failed to allocate new 2MiB Page!");
 		match self.list.binary_search_by(|x| x.descriptor.phys.cmp(&info.descriptor.phys))
@@ -352,7 +352,7 @@ impl PageAllocationManager
 	{
 		if self.list.len() == self.list.capacity()
 		{
-			panic!("NoirVisor has exceeded 128MiB Internal allocation limit!");
+			panic!("NegOne has exceeded 128MiB Internal allocation limit!");
 		}
 		let mut info = PageAllocationInformation::new().expect("Failed to allocate new 2MiB Page!");
 		info.bitmap = [u64::MAX; 8];

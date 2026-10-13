@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines Basic Development Kits for NoirVisor Core in Rust.
+ * This file defines Basic Development Kits for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -108,7 +108,7 @@ impl<const N: usize, T: Sized> MmioDescriptor<N, T>
 
 	pub fn map(phys: u64) -> Self
 	{
-		Self { virt: unsafe { noir_map_uncached_memory(phys, page_4kb_mult(N)).cast() }, phys }
+		Self { virt: unsafe { negone_map_uncached_memory(phys, page_4kb_mult(N)).cast() }, phys }
 	}
 }
 
@@ -119,7 +119,7 @@ impl<const N: usize, T: Sized> Drop for MmioDescriptor<N, T>
 		if !self.virt.is_null()
 		{
 			unsafe {
-				noir_unmap_physical_memory(self.virt.cast(), page_4kb_mult(N));
+				negone_unmap_physical_memory(self.virt.cast(), page_4kb_mult(N));
 			}
 		}
 	}
@@ -157,7 +157,7 @@ impl<T: Sized> MappedDescriptor<T>
 
 	pub fn map(phys: u64, size: usize) -> Self
 	{
-		Self { virt: AtomicPtr::new(unsafe { noir_map_physical_memory(phys, size) }.cast()), phys, size }
+		Self { virt: AtomicPtr::new(unsafe { negone_map_physical_memory(phys, size) }.cast()), phys, size }
 	}
 
 	pub fn is_null(&self) -> bool
@@ -185,7 +185,7 @@ impl<T: Sized> Drop for MappedDescriptor<T>
 	fn drop(&mut self)
 	{
 		unsafe {
-			noir_unmap_physical_memory(self.virt.load(Ordering::Relaxed).cast(), self.size);
+			negone_unmap_physical_memory(self.virt.load(Ordering::Relaxed).cast(), self.size);
 		}
 	}
 }
@@ -476,7 +476,7 @@ impl EnabledFeatures
 {
 	pub fn get() -> Self
 	{
-		Self(unsafe { noir_query_enabled_features_in_system() } as u64)
+		Self(unsafe { negone_query_enabled_features_in_system() } as u64)
 	}
 
 	const FEATURE_NAMES: [&'static str; 10] = [
@@ -538,37 +538,37 @@ extern "C" fn phys_mem_range_enum_rt(start: u64, length: u64, context: *mut c_vo
 
 pub static SYSTEM_PHYSICAL_MEMORY_RANGES: LazyLock<Vec<PhysicalRange>> = LazyLock::new(|| {
 	let mut v = Vec::new();
-	unsafe { noir_enum_physical_memory_ranges(phys_mem_range_enum_rt, (&raw mut v).cast()) };
+	unsafe { negone_enum_physical_memory_ranges(phys_mem_range_enum_rt, (&raw mut v).cast()) };
 	v
 });
 
 unsafe extern "C" {
 	// Processor State Facility
-	pub fn noir_get_processor_count() -> u32;
-	pub fn noir_get_current_processor() -> u32;
-	pub fn noir_generic_call(worker: BroadcastWorker, context: *mut c_void);
+	pub fn negone_get_processor_count() -> u32;
+	pub fn negone_get_current_processor() -> u32;
+	pub fn negone_generic_call(worker: BroadcastWorker, context: *mut c_void);
 	// Memory Facility
-	pub fn noir_get_physical_address(virtual_address: *mut c_void) -> u64;
-	pub fn noir_alloc_2mb_page() -> *mut c_void;
-	pub fn noir_free_2mb_page(virtual_address: *mut c_void);
-	pub fn noir_find_virt_by_phys(physical_address: u64) -> *mut c_void;
-	pub fn noir_map_physical_memory(physical_address: u64, length: usize) -> *mut c_void;
-	pub fn noir_map_uncached_memory(physical_address: u64, length: usize) -> *mut c_void;
-	pub fn noir_unmap_physical_memory(virtual_address: *mut c_void, length: usize);
-	pub fn noir_enum_physical_memory_ranges(callback_routine: PhysicalRangeCallback, context: *mut c_void);
+	pub fn negone_get_physical_address(virtual_address: *mut c_void) -> u64;
+	pub fn negone_alloc_2mb_page() -> *mut c_void;
+	pub fn negone_free_2mb_page(virtual_address: *mut c_void);
+	pub fn negone_find_virt_by_phys(physical_address: u64) -> *mut c_void;
+	pub fn negone_map_physical_memory(physical_address: u64, length: usize) -> *mut c_void;
+	pub fn negone_map_uncached_memory(physical_address: u64, length: usize) -> *mut c_void;
+	pub fn negone_unmap_physical_memory(virtual_address: *mut c_void, length: usize);
+	pub fn negone_enum_physical_memory_ranges(callback_routine: PhysicalRangeCallback, context: *mut c_void);
 	pub fn memcpy(dest: *mut c_void, src: *const c_void, cch: usize) -> *mut c_void;
 	pub fn memset(dest: *mut c_void, val: c_int, cch: usize) -> *mut c_void;
 	// Image Facility
 	pub fn nvc_store_image_info(base: *mut *mut c_void, size: *mut u32);
 	// Configuration Facility
-	pub fn noir_query_enabled_features_in_system() -> i64;
+	pub fn negone_query_enabled_features_in_system() -> i64;
 	// String Facility
 	pub fn strlen(ptr: *const i8) -> usize;
 	// Synchronization Facility
-	pub fn noir_acquire_pushlock_exclusive(push_lock: *mut usize);
-	pub fn noir_acquire_pushlock_shared(push_lock: *mut usize);
-	pub fn noir_release_pushlock_exclusive(push_lock: *mut usize);
-	pub fn noir_release_pushlock_shared(push_lock: *mut usize);
+	pub fn negone_acquire_pushlock_exclusive(push_lock: *mut usize);
+	pub fn negone_acquire_pushlock_shared(push_lock: *mut usize);
+	pub fn negone_release_pushlock_exclusive(push_lock: *mut usize);
+	pub fn negone_release_pushlock_shared(push_lock: *mut usize);
 }
 
 /// ## `nulstr_from_ptr` function

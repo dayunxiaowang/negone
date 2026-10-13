@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines NoirVisor CVM status values.
+ * This file defines NegOne CVM status values.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -135,7 +135,7 @@ impl fmt::Display for Status
 			Status::NOT_IMPLEMENTED => Some("This operation is not implemented"),
 			Status::UNKNOWN_PROCESSOR => Some("This processor is unknown"),
 			Status::INVALID_PARAMETER => Some("One or more parameters are invalid"),
-			Status::HYPERVISION_ABSENT => Some("NoirVisor has not subverted the system yet"),
+			Status::HYPERVISION_ABSENT => Some("NegOne has not subverted the system yet"),
 			Status::VCPU_ALREADY_CREATED => Some("The vCPU is already created in the VM"),
 			Status::BUFFER_TOO_SMALL => Some("The buffer is too small"),
 			Status::VCPU_NOT_EXIST => Some("The vCPU does not exist in this VM"),
@@ -143,7 +143,7 @@ impl fmt::Display for Status
 			Status::ACCESS_DENIED => Some("Access is denied"),
 			Status::HARDWARE_ERROR => Some("Hardware error"),
 			Status::UNINITIALIZED => Some("Uninitialized"),
-			Status::NSV_VIOLATION => Some("NoirVisor Secure Virtualization policy violated"),
+			Status::NSV_VIOLATION => Some("NegOne Secure Virtualization policy violated"),
 			Status::ACPI_NO_SUCH_TABLE => Some("The specified ACPI table can't be found"),
 			Status::DISPATCH_FAILURE => Some("This I/O request is not properly dispatched"),
 			Status::SYNCHRONIZATION_VIOLATION => Some("Synchonization rule is violated"),

@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file defines Microsoft TLFS MSR for NoirVisor Core in Rust.
+ * This file defines Microsoft TLFS MSR for NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -24,7 +24,7 @@ use crate::{
 			crdr::{read_cr8, write_cr8},
 			msr::{rdmsr, wrmsr},
 		},
-		nvbdk::{noir_find_virt_by_phys, page_4kb_base},
+		nvbdk::{negone_find_virt_by_phys, page_4kb_base},
 		x86::msr::*,
 	},
 };
@@ -62,7 +62,7 @@ impl MshvVcpuContext
 				self.hypercall_gpfn = *value;
 				let src = if self.in_long_mode() { MSHV_HYPERCALL_CODE64.as_slice() } else { MSHV_HYPERCALL_CODE32.as_slice() };
 				let dest = unsafe {
-					let virt: *mut u8 = noir_find_virt_by_phys(page_4kb_base(*value)).cast();
+					let virt: *mut u8 = negone_find_virt_by_phys(page_4kb_base(*value)).cast();
 					slice::from_raw_parts_mut(virt, src.len())
 				};
 				dest.copy_from_slice(src);

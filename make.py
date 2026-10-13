@@ -38,7 +38,7 @@ def do_build():
 	i=1
 	optimizer_enabled=False
 	target="uefi"
-	# NoirVisor usually doesn't use more than 20KB of heap.
+	# NegOne usually doesn't use more than 20KB of heap.
 	# 256KiB of heap granularity should be quite enough.
 	os.environ["DEFAULT_MMAP_GRANULARITY"]="0x40000"
 	extra_args=[]
@@ -75,7 +75,7 @@ def do_check():
 	os.environ["CC_x86_64-unknown-uefi"]="clang-cl"
 	os.environ["CFLAGS_x86_64-unknown-uefi"]="/GS- --target=x86_64-pc-windows-msvc -mno-sse -gcodeview"
 	subprocess.run(["cargo","audit"])
-	subprocess.run(["cargo","clippy","--target","x86_64-unknown-uefi","--package","nvcore","--package","loadefi","--package","cvsched"])
+	subprocess.run(["cargo","clippy","--target","x86_64-unknown-uefi","--package","negone-core","--package","loadefi","--package","cvsched"])
 	subprocess.run(["cargo","clippy","--target","x86_64-pc-windows-msvc","--package","cvsched"])
 	subprocess.run(["cargo","clippy","--package","cvmock","--all-targets"])
 	subprocess.run(["cargo","fmt","--check"])

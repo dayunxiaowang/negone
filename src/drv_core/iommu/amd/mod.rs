@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the AMD-Vi driver of NoirVisor Core in Rust.
+ * This file is the AMD-Vi driver of NegOne Core in Rust.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -327,7 +327,7 @@ impl AmdIommuBar
 			.with_s(true)
 			.with_f(true)
 			.with_store_data(1)
-			.with_store_address(unsafe { noir_get_physical_address(signal.as_ptr().cast()) } >> 3);
+			.with_store_address(unsafe { negone_get_physical_address(signal.as_ptr().cast()) } >> 3);
 		self.issue_cmd(compl_wait_cmd);
 		unsafe {
 			tail.with_cmd_tail_ptr(tail.cmd_tail_ptr() + 1).write(virt);

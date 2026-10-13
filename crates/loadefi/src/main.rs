@@ -1,9 +1,9 @@
 /*
- * NoirVisor Core in Rust
+ * NegOne Core in Rust
  *
  * Copyright (c) Zero Tang, 2018-2026. All rights reserved.
  *
- * This file is the entry point for the NoirVisor UEFI test loader.
+ * This file is the entry point for the NegOne UEFI test loader.
  *
  * This program is distributed in the hope that it will be useful, but
  * without any warranty (no matter implied warranty or merchantability
@@ -123,7 +123,7 @@ unsafe extern "efiapi" fn uefi_entry(image_handle: Handle, system_table: *mut Sy
 	// Print some boring initialization stuff.
 	clear_screen();
 	println!("{}", include_str!("banner.txt"));
-	println!("Welcome to NoirVisor Loader!");
+	println!("Welcome to NegOne Loader!");
 	println!(
 		"Firmware Vendor: {}, Revision: {}",
 		unsafe { CStr16::from_ptr(systab.firmware_vendor.cast()) },
@@ -138,7 +138,7 @@ unsafe extern "efiapi" fn uefi_entry(image_handle: Handle, system_table: *mut Sy
 	print_cpu_info();
 	// Load the driver.
 	let start_image = unsafe { (*BS_TABLE.load(Ordering::Relaxed)).start_image };
-	let hv_img_handle: Handle = match load_hypervisor_driver(image_handle, "\\NoirVisor.efi")
+	let hv_img_handle: Handle = match load_hypervisor_driver(image_handle, "\\NegOne.efi")
 	{
 		Some(h) =>
 		{
@@ -167,7 +167,7 @@ unsafe extern "efiapi" fn uefi_entry(image_handle: Handle, system_table: *mut Sy
 			}
 			else
 			{
-				println!("NoirVisor CVM Scheduler image is successfully started!");
+				println!("NegOne CVM Scheduler image is successfully started!");
 				#[cfg(target_os = "uefi")]
 				unsafe {
 					let st = nvcvm::uefi::init(system_table);
@@ -183,7 +183,7 @@ unsafe extern "efiapi" fn uefi_entry(image_handle: Handle, system_table: *mut Sy
 				let st = unsafe { ((*BS_TABLE.load(Ordering::Relaxed)).unload_image)(h) };
 				if st.is_error()
 				{
-					println!("Failed to unload NoirVisor CVM Scheduler image! Reason: {st}");
+					println!("Failed to unload NegOne CVM Scheduler image! Reason: {st}");
 				}
 			}
 		}
@@ -227,7 +227,7 @@ mod panicking
 	#[panic_handler]
 	fn panic(panic: &PanicInfo) -> !
 	{
-		println!("[PANIC] NoirVisor Loader {}", panic);
+		println!("[PANIC] NegOne Loader {}", panic);
 		loop
 		{}
 	}

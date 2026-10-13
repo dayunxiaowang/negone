@@ -2,7 +2,7 @@
 name = "cvsched"
 version = "0.1.0"
 edition = "2024"
-description = "NoirVisor OS-agnostic CVM Scheduler"
+description = "NegOne OS-agnostic CVM Scheduler"
 
 [lib]
 crate-type = ["staticlib"]

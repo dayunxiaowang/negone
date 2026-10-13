@@ -3,7 +3,7 @@
 	{
 		"cargo":
 		{
-			"cmd":["cargo","build","--target","x86_64-unknown-uefi","--package","loadefi","--package","nvcore","--package","cvsched"],
+			"cmd":["cargo","build","--target","x86_64-unknown-uefi","--package","loadefi","--package","negone-core","--package","cvsched"],
 			"progressive":true
 		},
 		"memcpy":
@@ -28,16 +28,16 @@
 		},
 		"config":
 		{
-			"cmd":["{python}","./build/makeueficonfig.py","./build/DefaultUefiConfig.json","./bin/{outdir}/NoirVisorConfig.bin"]
+			"cmd":["{python}","./build/makeueficonfig.py","./build/DefaultUefiConfig.json","./bin/{outdir}/NegOneConfig.bin"]
 		},
-		"NoirVisor":
+		"NegOne":
 		{
-			"cmd":["lld-link","./target/x86_64-unknown-uefi/{cargo_preset}/libnvcore.a","{objpath}/memcpy.obj","{objpath}/memset.obj","{objpath}/memcmp.obj","{objpath}/strlen.obj","/OUT:./bin/{outdir}/NoirVisor.efi","/SUBSYSTEM:EFI_RUNTIME_DRIVER","/ENTRY:NoirDriverEntry","/PDB:./bin/{outdir}/NoirVisor.pdb"],
+			"cmd":["lld-link","./target/x86_64-unknown-uefi/{cargo_preset}/libnegone_core.a","{objpath}/memcpy.obj","{objpath}/memset.obj","{objpath}/memcmp.obj","{objpath}/strlen.obj","/OUT:./bin/{outdir}/NegOne.efi","/SUBSYSTEM:EFI_RUNTIME_DRIVER","/ENTRY:NegOneDriverEntry","/PDB:./bin/{outdir}/NegOne.pdb"],
 			"dependencies":["cargo","memcpy","memset","memcmp","strlen"]
 		},
 		"cvsched":
 		{
-			"cmd":["lld-link","./target/x86_64-unknown-uefi/{cargo_preset}/libcvsched.a","/OUT:./bin/{outdir}/cvsched.efi","/SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER","/ENTRY:NoirDriverEntry","/PDB:./bin/{outdir}/cvsched.pdb"],
+			"cmd":["lld-link","./target/x86_64-unknown-uefi/{cargo_preset}/libcvsched.a","/OUT:./bin/{outdir}/cvsched.efi","/SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER","/ENTRY:NegOneDriverEntry","/PDB:./bin/{outdir}/cvsched.pdb"],
 			"dependencies":["cargo"]
 		},
 		"image":
@@ -49,20 +49,20 @@
 				"-md","::/EFI/BOOT",
 				"-c","./target/x86_64-unknown-uefi/{cargo_preset}/loadefi.efi|::/EFI/BOOT/bootx64.efi",
 				"-c","bin/{outdir}/cvsched.efi|::/",
-				"-c","bin/{outdir}/NoirVisor.efi|::/",
-				"-c","bin/{outdir}/NoirVisorConfig.bin|::/",
-				"-o","./bin/{outdir}/NoirVisor-Uefi.img"
+				"-c","bin/{outdir}/NegOne.efi|::/",
+				"-c","bin/{outdir}/NegOneConfig.bin|::/",
+				"-o","./bin/{outdir}/NegOne-Uefi.img"
 			],
-			"dependencies":["NoirVisor","cvsched","config"]
+			"dependencies":["NegOne","cvsched","config"]
 		},
 		"vhdx":
 		{
-			"cmd":["qemu-img","convert","-f","raw","-O","vhdx","./bin/{outdir}/NoirVisor-Uefi.img","./bin/{outdir}/NoirVisor-Uefi.vhdx"],
+			"cmd":["qemu-img","convert","-f","raw","-O","vhdx","./bin/{outdir}/NegOne-Uefi.img","./bin/{outdir}/NegOne-Uefi.vhdx"],
 			"dependencies":["image"]
 		},
 		"vmdk":
 		{
-			"cmd":["qemu-img","convert","-f","raw","-O","vmdk","./bin/{outdir}/NoirVisor-Uefi.img","./bin/{outdir}/NoirVisor-Uefi.vmdk"],
+			"cmd":["qemu-img","convert","-f","raw","-O","vmdk","./bin/{outdir}/NegOne-Uefi.img","./bin/{outdir}/NegOne-Uefi.vmdk"],
 			"dependencies":["image"]
 		}
 	},
